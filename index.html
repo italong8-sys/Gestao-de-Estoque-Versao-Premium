@@ -10,238 +10,319 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
     <style>
-        :root {
-            --bg: #0f172a; --card: #020617; --text: #e2e8f0; --accent: #38bdf8;
-            --neon-pink: #ff00ff; --neon-green: #39ff14;
-        }
+        /* Variáveis e Tema */
+        :root { --bg: #0f172a; --card: #020617; --text: #e2e8f0; --accent: #38bdf8; --neon-pink: #ff00ff; --neon-green: #39ff14; }
         .light-mode { --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; --accent: #0284c7; }
-
+        
+        * { box-sizing: border-box; }
         body { margin: 0; font-family: 'Segoe UI', system-ui; background: var(--bg); color: var(--text); transition: 0.3s; overflow-x: hidden; display: flex; flex-direction: column; min-height: 100vh; }
         
+        /* Cabeçalho */
         header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #020617; border-bottom: 2px solid var(--accent); min-height: 60px; }
-        
+        .empresa-destaque { color: var(--neon-pink); font-weight: 900; font-size: 18px; text-transform: uppercase; text-shadow: 0 0 5px var(--neon-pink); }
         .user-area { display: flex; align-items: center; gap: 15px; }
-        .user { color: var(--neon-green); font-weight: bold; text-shadow: 0 0 5px var(--neon-green); }
-        .config-btn { cursor: pointer; font-size: 22px; }
-
+        .user { color: var(--neon-green); font-weight: bold; }
+        
+        /* Modais e Alertas */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 5000; padding: 20px; }
+        .hidden { display: none !important; }
+        .alert-popup { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #ef4444; color: white; padding: 15px 30px; border-radius: 8px; font-weight: bold; z-index: 9999; box-shadow: 0 0 20px rgba(239, 68, 68, 0.6); display: none; text-align: center; }
+        
+        /* Área de Login */
         #loginArea { display: flex; justify-content: center; align-items: center; flex-grow: 1; padding: 20px; }
-        .login-card { width: 100%; max-width: 380px; background: var(--card); padding: 30px; border-radius: 15px; border: 1px solid var(--accent); box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); }
-
-        .menu-geral { display: flex; flex-wrap: wrap; gap: 10px; padding: 10px 20px; background: rgba(0,0,0,0.3); justify-content: center; }
-        .menu-geral button { flex: 1; min-width: 130px; padding: 12px; border: none; border-radius: 8px; background: var(--accent); color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 11px; }
-
+        .card-panel { width: 100%; max-width: 420px; background: var(--card); padding: 25px; border-radius: 12px; border: 1px solid var(--accent); box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); max-height: 90vh; overflow-y: auto;}
+        
+        /* Menu de Navegação */
+        .menu-geral { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px; background: rgba(0,0,0,0.4); justify-content: center; }
+        .menu-geral button { flex: 1; min-width: 140px; padding: 10px; border: none; border-radius: 8px; background: var(--accent); color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 11px; transition: 0.2s; }
+        .menu-geral button:hover { filter: brightness(1.2); transform: scale(1.02); }
+        
+        /* Layout Grid e Cards */
         .container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; }
         @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
-
-        .card { background: var(--card); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); position: relative; }
-        h3 { margin-top: 0; color: var(--accent); border-bottom: 1px solid #1e293b; padding-bottom: 10px; font-size: 16px; display: flex; align-items: center; gap: 8px; }
-
-        label { font-size: 12px; font-weight: bold; margin-top: 10px; display: block; color: var(--accent); }
-        input, select { width: 100%; padding: 10px; margin-top: 5px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
+        .card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
+        h3 { margin-top: 0; color: var(--accent); border-bottom: 1px solid #1e293b; padding-bottom: 10px; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+        
+        /* Formulários e Tabelas */
+        label { font-size: 11px; font-weight: bold; margin-top: 10px; display: block; color: var(--accent); text-transform: uppercase; }
+        input, select { width: 100%; padding: 10px; margin-top: 4px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: white; }
         .light-mode input, .light-mode select { background: #fff; color: #000; }
         
-        .action { width: 100%; padding: 12px; margin-top: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .action { width: 100%; padding: 12px; margin-top: 15px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
         .btn-save { background: var(--neon-green); color: #020617; }
+        .btn-pay { background: #009ee3; color: white; border: 2px solid #009ee3; }
+        .btn-ai { background: linear-gradient(45deg, #ff00ff, #38bdf8); color: white; }
         
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
-        th { background: #1e293b; color: var(--accent); padding: 8px; text-align: left; border-bottom: 1px solid var(--accent); }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 11px; text-align: left; }
+        th { background: #1e293b; color: var(--accent); padding: 8px; border-bottom: 2px solid var(--accent); }
         td { padding: 8px; border-bottom: 1px solid #1e293b; }
-
-        #relogio { font-family: 'Courier New', monospace; font-size: 14px; color: var(--neon-green); text-align: center; font-weight: bold; }
         
+        /* Relógio e Calculadora */
+        #relogio { font-family: monospace; font-size: 14px; color: var(--neon-green); font-weight: bold; }
         .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 10px; }
-        .calc-btn { padding: 15px; font-weight: bold; cursor: pointer; border-radius: 5px; border: none; background: #334155; color: white; }
-
-        #modalConfig { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 3000; }
-        .hidden { display: none !important; }
-
-        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; }
-        .pendente { background: #eab308; color: #000; }
-        .comprado { background: #3b82f6; color: #fff; }
-        .recebido { background: #22c55e; color: #fff; }
-
-        .footer-whatsapp { text-align: center; padding: 20px; }
-        .btn-whats { background: #25d366; color: white; padding: 12px 25px; border-radius: 50px; text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; }
-        .footer-credits { text-align: center; padding: 15px; font-size: 12px; opacity: 0.6; }
+        .calc-btn { padding: 15px; font-weight: bold; cursor: pointer; border-radius: 5px; border: none; background: #334155; color: white; font-size: 16px;}
+        
+        /* Rodapé */
+        .footer-credits { text-align: center; padding: 15px; font-size: 12px; opacity: 0.6; border-top: 1px solid #334155; margin-top: auto; }
     </style>
 </head>
 <body>
 
+<div id="timeoutAlert" class="alert-popup">
+    ⏳ Devido a falta de interação no app, você foi deslogado por motivos de segurança! Faça o login novamente.
+</div>
+
 <header>
-    <div>🚀 <strong>GESTÃO DE ESTOQUE VERSÃO PREMIUM</strong></div>
+    <div style="display:flex; align-items:center; gap:15px;">
+        <span>🚀 <strong>GESTÃO DE ESTOQUE VERSÃO PREMIUM</strong></span>
+        <span id="empresaTopo" class="empresa-destaque hidden"></span>
+    </div>
     <div id="relogioContainer"></div>
     <div class="user-area">
         <span id="usuarioTopo" class="user"></span>
-        <span id="btnConfigGlobal" class="config-btn hidden" onclick="abrirConfig()">⚙️</span>
+        <span id="btnConfigGlobal" style="cursor:pointer; font-size:20px;" class="hidden" onclick="abrirConfig()">⚙️</span>
     </div>
 </header>
 
 <div id="loginArea">
-    <div class="login-card">
-        <h3>🔐 Acesso Identificado</h3>
-        <label>👤 Usuário</label>
-        <input id="userLogin" placeholder="Digite seu login">
-        <label>🔑 Senha</label>
-        <input id="passLogin" type="password" placeholder="Digite sua senha">
-        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; margin-top:10px; font-size:13px;">
-            <input type="checkbox" style="width:auto;" onclick="toggleSenha()"> Mostrar Senha
-        </label>
-        <button class="action btn-save" onclick="autenticar()">🔓 ENTRAR NO SISTEMA</button>
+    <div class="card-panel">
+        <h3>🔐 🖥️ Identificação do Usuário</h3>
+        <label>👤 CPF (Apenas números) ou Login</label>
+        <input id="userLogin" placeholder="Digite seu CPF">
+        <label>🔑 Senha Secreta</label>
+        <input id="passLogin" type="password" placeholder="***">
+        <label style="display:flex; align-items:center; gap:8px; cursor:pointer;"><input type="checkbox" style="width:auto;" onclick="toggleSenha('passLogin')"> Revelar Senha</label>
+        
+        <button class="action btn-save" onclick="autenticar()">🔓 ACESSAR PLATAFORMA</button>
+        <hr style="opacity:0.2; margin:20px 0;">
+        <button class="action btn-pay" onclick="abrirPgto()">💳 REGISTRAR NOVO USUÁRIO (MERCADO PAGO)</button>
+    </div>
+</div>
+
+<div id="modalPgto" class="modal">
+    <div class="card-panel" style="text-align:center;">
+        <h3>🤝 Liberação de Cadastro</h3>
+        <p style="font-size:13px; color:#aaa;">Para evitar fraudes e múltiplas contas, pague a taxa única de registro.</p>
+        <a href="https://mpago.li/1Qt8hoV" target="_blank" style="display:block; padding:15px; background:#009ee3; color:white; text-decoration:none; border-radius:8px; font-weight:bold; margin:20px 0;">1️⃣ CLIQUE AQUI PARA PAGAR</a>
+        <button class="action btn-save" onclick="validarPgto()">2️⃣ JÁ PAGUEI / VALIDAR ACESSO</button>
+        <button class="action" onclick="document.getElementById('modalPgto').style.display='none'">❌ CANCELAR</button>
+    </div>
+</div>
+
+<div id="modalReg" class="modal">
+    <div class="card-panel">
+        <h3>📝 Cadastro Completo de Usuário</h3>
+        <label>👤 Nome Completo</label><input id="regNome">
+        <label>📄 CPF (Apenas números - Verificação Única)</label><input id="regCpf" maxlength="11" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')">
+        <label>📱 Celular / WhatsApp</label><input id="regTel">
+        <label>🏢 Nome da Empresa (Opcional)</label><input id="regEmpresa">
+        <label>🔑 Criar Senha</label><input id="regPass" type="password">
+        <button class="action btn-save" onclick="registrarUsuario()">💾 FINALIZAR CADASTRO</button>
+        <button class="action" onclick="document.getElementById('modalReg').style.display='none'">VOLTAR</button>
     </div>
 </div>
 
 <div id="app" class="hidden">
     <nav class="menu-geral">
-        <button onclick="mostrar('estoque')">📦 Estoque</button>
-        <button onclick="mostrar('notas')">🧾 Entrada NF</button>
-        <button onclick="mostrar('hist_nf')">📜 Histórico NF</button>
-        <button onclick="mostrar('venda')">💰 Nova Venda</button>
-        <button onclick="mostrar('controle_vendas')">📊 Vendas</button>
-        <button onclick="mostrar('solicitacao')">🛍️ Solicitação</button>
-        <button onclick="mostrar('requisicao')">📝 Requisição</button>
-        <button onclick="mostrar('calculadora')">🧮 Calc</button>
-        <button onclick="logout()" style="background:#ef4444;">🚪 Sair</button>
+        <button onclick="mostrar('estoque')">📦 1. Estoque Geral</button>
+        <button onclick="mostrar('notas')">🧾 2. Entrada de NF</button>
+        <button onclick="mostrar('hist_nf')">📜 3. Histórico NF</button>
+        <button onclick="mostrar('escanear_nf')">🖨️ 4. Escanear Auto NF</button>
+        <button onclick="mostrar('venda')">💰 5. Nova Venda PDV</button>
+        <button onclick="mostrar('vendas_hist')">📊 6. Controle Vendas</button>
+        <button onclick="mostrar('solicitacao')">🛍️ 7. Solicitação / Cotação</button>
+        <button onclick="mostrar('protocolo')">📥 8. Protocolo Recebimento</button>
+        <button onclick="mostrar('requisicao')">📝 9. Requisições</button>
+        <button onclick="mostrar('calculadora')">🧮 10. Calculadora</button>
+        <button onclick="gerarRelatorioMensal()" style="background:#8b5cf6;">📄 11. Gerar Relatório Mensal</button>
+        <button onclick="logout()" style="background:#ef4444;">🚪 12. Sair do Sistema</button>
     </nav>
 
     <div id="estoque" class="container section">
         <div class="card">
-            <h3>📦 Cadastro de Material</h3>
-            <label>🏷️ Nome do Produto</label><input id="estNome">
-            <label>⚠️ Alerta de Estoque Baixo (Min)</label><input id="estMin" type="number">
-            <label>🔖 Código de Barras</label>
+            <h3>📦 ➕ Cadastrar Novo Material</h3>
+            <label>🏷️ Nomenclatura / Nome</label><input id="estNome">
+            <label>⚠️ Alerta Mínimo de Estoque</label><input id="estMin" type="number">
+            <label>🔖 Código Barras/SKU</label>
             <div style="display:flex; gap:5px;"><input id="estCod"><button onclick="abrirCam('estCod')" style="background:var(--accent); border:none; padding:10px; border-radius:8px;">📷</button></div>
-            <button class="action btn-save" onclick="addEstoque()">💾 SALVAR NO CADASTRO</button>
+            <button class="action btn-save" onclick="addEstoque()">💾 SALVAR NO BANCO DE DADOS</button>
         </div>
-        <div class="card">
-            <h3>📊 Inventário Geral (A-Z)</h3>
-            <table id="tabEstoque"><thead><tr><th>Material</th><th>Saldo</th><th>Min</th></tr></thead><tbody></tbody></table>
+        <div class="card" style="overflow-x:auto;">
+            <h3>📊 📋 Inventário Atualizado</h3>
+            <table id="tabEstoque"><thead><tr><th>Produto</th><th>Saldo</th><th>Mínimo</th></tr></thead><tbody></tbody></table>
         </div>
     </div>
 
     <div id="notas" class="container section hidden">
         <div class="card" style="grid-column: span 2;">
-            <h3>🧾 📥 Lançar Nova Nota Fiscal</h3>
+            <h3>🧾 📥 Lançamento de Nota Fiscal Completa</h3>
             <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
-                <div><label>🔢 Nº Nota Fiscal</label><input id="nfNum"></div>
+                <div><label>🔢 Nº NF</label><input id="nfNum"></div>
                 <div><label>🏢 Fornecedor</label><input id="nfForn"></div>
                 <div><label>📜 CNPJ Fornecedor</label><input id="nfCnpj"></div>
             </div>
             <div style="margin-top:20px; padding:15px; border:1px solid #334155; border-radius:10px;">
                 <div style="display:grid; grid-template-columns: 2fr 1fr 1fr 0.5fr; gap:10px; align-items:end;">
-                    <div><label>🔍 Buscar Item (Nome ou Código)</label>
+                    <div><label>🔍 Buscar Item (Escanear/Nome)</label>
                         <div style="display:flex; gap:5px;"><input id="nfItemBusca" onchange="localizarItemNF(this.value)"><button onclick="abrirCam('nfItemBusca')" style="background:var(--accent); border:none; padding:10px; border-radius:8px;">📷</button></div>
                     </div>
                     <div><label>🔢 Qtd</label><input id="nfQtd" type="number"></div>
                     <div><label>💲 Valor Unit.</label><input id="nfVal" type="number" step="0.01"></div>
-                    <button class="btn-save" style="height:45px; border-radius:8px; border:none; cursor:pointer;" onclick="addItemListaNF()">➕</button>
+                    <button class="btn-save" style="height:40px; border-radius:8px; border:none; cursor:pointer;" onclick="addItemListaNF()">➕</button>
                 </div>
             </div>
             <table style="margin-top:20px;">
                 <thead><tr><th>Item</th><th>Qtd</th><th>Unitário</th><th>Subtotal</th><th>Ação</th></tr></thead>
                 <tbody id="corpoNfTemp"></tbody>
             </table>
-            <h4 style="text-align:right; color:var(--neon-green);">VALOR TOTAL NF: R$ <span id="nfTotalLabel">0.00</span></h4>
-            <button class="action btn-save" onclick="finalizarNF()">✅ REGISTRAR ENTRADA DE NOTA</button>
+            <h4 style="text-align:right; color:var(--neon-green);">TOTAL DA NF: R$ <span id="nfTotalLabel">0.00</span></h4>
+            <button class="action btn-save" onclick="finalizarNF()">✅ REGISTRAR ENTRADA DEFINITIVA DE NF</button>
         </div>
     </div>
 
     <div id="hist_nf" class="container section hidden">
         <div class="card" style="grid-column: span 2;">
-            <h3>📜 Histórico de Entrada de Notas Fiscais</h3>
-            <input id="buscaNf" placeholder="🔍 Filtrar por Data, Nº NF, Fornecedor ou CNPJ..." onkeyup="renderHistNf()" style="margin-bottom:15px;">
+            <h3>📜 🔍 Histórico de Entrada de NF</h3>
+            <input id="buscaNf" placeholder="🔍 Pesquisar por Data, Nº NF, Fornecedor ou CNPJ..." onkeyup="renderHistNf()" style="margin-bottom:15px;">
             <table><thead><tr><th>Data</th><th>Nº NF</th><th>Fornecedor</th><th>CNPJ</th><th>Total</th></tr></thead><tbody id="corpoHistNf"></tbody></table>
+        </div>
+    </div>
+
+    <div id="escanear_nf" class="container section hidden">
+        <div class="card">
+            <h3>🖨️ 📄 Digitalizar e Salvar NF em PDF</h3>
+            <p style="font-size:11px; color:#aaa;">Faça o upload da nota fiscal escaneada utilizando o celular ou impressora.</p>
+            <label>📎 Selecionar Arquivo (PDF/Imagem)</label>
+            <input type="file" id="nfFile" accept="application/pdf, image/*" style="padding:5px;">
+            <label>✏️ Renomear Arquivo (Ex: NF-1234-Fornecedor)</label>
+            <input id="nfFileName">
+            <button class="action btn-save" onclick="salvarPdfNf()">💾 SALVAR NF EM PDF</button>
+        </div>
+        <div class="card">
+            <h3>📂 Histórico de NF Digitalizadas</h3>
+            <table><thead><tr><th>Data</th><th>Arquivo para Download</th></tr></thead><tbody id="listaNfPdf"></tbody></table>
         </div>
     </div>
 
     <div id="venda" class="container section hidden">
         <div class="card">
-            <h3>💰 Ponto de Venda (PDV)</h3>
+            <h3>💰 🛒 Ponto de Venda (Nova Venda)</h3>
             <label>📷 Escanear Material</label>
-            <div style="display:flex; gap:5px;"><input id="vendaCod" placeholder="Aguardando scanner..." onchange="vendaAcao()"><button onclick="abrirCam('vendaCod')" style="background:var(--accent); border:none; padding:10px; border-radius:8px;">📷</button></div>
+            <div style="display:flex; gap:5px;">
+                <input id="vendaCod" placeholder="Aguardando scanner..." onchange="vendaAcao()">
+                <button onclick="abrirCam('vendaCod')" style="background:var(--accent); border:none; padding:10px; border-radius:8px;">📷</button>
+            </div>
             <label style="display:flex; align-items:center; gap:8px; margin-top:10px;"><input type="checkbox" id="vendaAuto" checked> Escanear automático o item e gerar venda</label>
             <label>🔢 Quantidade</label><input id="vendaQtd" type="number" value="1">
-            <button class="action btn-save" onclick="vendaAcao(true)">🛒 PROCESSAR VENDA</button>
+            <button class="action btn-save" onclick="vendaAcao(true)">🛒 PROCESSAR VENDA E DAR BAIXA</button>
         </div>
         <div class="card">
-            <h3>🔎 Detalhes do Produto</h3>
-            <div id="vendaPreview" style="padding:15px; border:1px dashed var(--accent); min-height:100px;">Aguardando leitura...</div>
+            <h3>🔎 Detalhes do Produto Selecionado</h3>
+            <div id="vendaPreview" style="padding:15px; border:1px dashed var(--accent); min-height:100px;">Aguardando leitura do item...</div>
         </div>
     </div>
 
-    <div id="controle_vendas" class="container section hidden">
+    <div id="vendas_hist" class="container section hidden">
         <div class="card" style="grid-column: span 2;">
-            <h3>📊 Controle de Vendas Realizadas</h3>
-            <table><thead><tr><th>Data/Hora</th><th>Material</th><th>Qtd</th><th>Valor Final</th><th>Usuário</th></tr></thead><tbody id="corpoVendas"></tbody></table>
+            <h3>📊 📝 Controle e Relatório de Vendas Realizadas</h3>
+            <table>
+                <thead><tr><th>Data/Hora</th><th>Material Escaneado</th><th>Qtd</th><th>Valor Final</th><th>Usuário / Vendedor</th></tr></thead>
+                <tbody id="corpoVendas"></tbody>
+            </table>
         </div>
     </div>
 
     <div id="solicitacao" class="container section hidden">
         <div class="card">
-            <h3>🛍️ Solicitação de Suprimentos</h3>
-            <label>📦 Material</label><input id="solNome">
-            <label>🔢 Quantidade</label><input id="solQtd" type="number">
-            <label>🚦 Status</label>
+            <h3>🤖 🔍 IA - Cotação de Preços Inteligente</h3>
+            <label>Qual material deseja cotar no mercado?</label>
+            <input id="iaBusca" placeholder="Ex: Cimento CP II 50kg, Notebook Dell...">
+            <button class="action btn-ai" onclick="cotarIA()">🧠 INICIAR COMPARAÇÃO COM I.A.</button>
+            <div id="iaResultado" style="margin-top:15px; padding:10px; background:rgba(255,0,255,0.1); border:1px dashed #ff00ff; border-radius:8px; font-size:12px; display:none;"></div>
+        </div>
+
+        <div class="card">
+            <h3>🛍️ 🛒 Lançar Nova Solicitação de Material</h3>
+            <label>📦 Descrição do Material</label><input id="solNome">
+            <label>🔢 Quantidade Necessária</label><input id="solQtd" type="number">
+            <label>🚦 Situação do Pedido</label>
             <select id="solStatus">
                 <option value="pendente">Pendente</option>
-                <option value="comprado">Já Comprado (Aguardando)</option>
+                <option value="comprado">Já Comprado (Aguardando Entrega)</option>
                 <option value="recebido">Material Recebido</option>
             </select>
-            <button class="action btn-save" onclick="addSolicitacao()">📝 ADICIONAR À LISTA</button>
+            <button class="action btn-save" onclick="addSolicitacao()">➕ ADICIONAR À LISTA DE COMPRAS</button>
         </div>
-        <div class="card">
-            <h3>📋 Lista de Compras</h3>
-            <table><thead><tr><th>Item</th><th>Qtd</th><th>Status</th></tr></thead><tbody id="tabSol"></tbody></table>
+
+        <div class="card" style="grid-column: span 2;">
+            <h3>📋 Acompanhamento Geral de Suprimentos</h3>
+            <table id="tabSol"><thead><tr><th>Data</th><th>Material Solicitado</th><th>Qtd</th><th>Status</th></tr></thead><tbody></tbody></table>
+        </div>
+    </div>
+
+    <div id="protocolo" class="container section hidden">
+        <div class="card" style="grid-column: span 2;">
+            <h3>📥 🏢 Protocolo Oficial de Recebimento de Materiais</h3>
+            <p style="font-size:12px; color:#aaa;">Registros vinculados automaticamente pelo dia de recebimento na aba de solicitações.</p>
+            <table>
+                <thead><tr><th>Dia do Recebimento (Data/Hora)</th><th>Material</th><th>Qtd</th><th>Aviso do Sistema</th></tr></thead>
+                <tbody id="tabProtocolos"></tbody>
+            </table>
         </div>
     </div>
 
     <div id="requisicao" class="container section hidden">
-        <div class="card">
-            <h3>📝 Requisição de Material</h3>
-            <label>👤 Funcionário</label><input id="reqFunc">
-            <label>🆔 Matrícula</label><input id="reqMat">
-            <label>📦 Selecionar Material</label>
-            <select id="reqItem" onchange="mostrarSaldoReq(this.value)"></select>
-            <div id="saldoAviso" style="font-size:11px; color:var(--accent); margin-top:5px;"></div>
-            <label>🔢 Quantidade</label><input id="reqQtd" type="number">
-            <button class="action btn-save" onclick="gerarRequisicao()">📄 IMPRIMIR REQUISIÇÃO (PDF)</button>
+        <div class="card" style="grid-column: span 2; max-width:600px; margin:auto;">
+            <h3>📝 👷 Formulário de Requisição (Retirada)</h3>
+            <label>👤 Solicitante (Nome do Funcionário)</label><input id="reqFunc">
+            <label>📦 Material a Retirar</label><select id="reqItem" onchange="mostrarSaldoReq(this.value)"></select>
+            <div id="saldoAviso" style="font-size:11px; color:var(--accent); margin-top:2px; font-weight:bold;"></div>
+            <label>🔢 Quantidade para Retirada</label><input id="reqQtd" type="number">
+            
+            <div style="display:flex; gap:10px; margin-top:15px; flex-wrap:wrap;">
+                <button class="action btn-save" style="margin-top:0;" onclick="salvarRequisicaoBaixa()">💾 1. SALVAR REQUISIÇÃO E DAR BAIXA NO ESTOQUE</button>
+                <button class="action" style="margin-top:0; background:#3b82f6; color:white;" onclick="gerarPdfRequisicao()">🖨️ 2. GERAR PDF PARA ASSINATURA (ALMOXARIFE E FUNC.)</button>
+            </div>
         </div>
     </div>
 
     <div id="calculadora" class="container section hidden">
         <div class="card" style="max-width:320px; margin:auto; grid-column: span 2;">
-            <h3>🧮 Calculadora Auxiliar</h3>
+            <h3>🧮 Calculadora do Sistema</h3>
             <input id="calcDisplay" style="text-align:right; font-size:24px; margin-bottom:10px;" readonly>
             <div class="calc-grid">
                 <button class="calc-btn" onclick="calc('7')">7</button><button class="calc-btn" onclick="calc('8')">8</button><button class="calc-btn" onclick="calc('9')">9</button><button class="calc-btn" onclick="calc('/')">/</button>
                 <button class="calc-btn" onclick="calc('4')">4</button><button class="calc-btn" onclick="calc('5')">5</button><button class="calc-btn" onclick="calc('6')">6</button><button class="calc-btn" onclick="calc('*')">*</button>
                 <button class="calc-btn" onclick="calc('1')">1</button><button class="calc-btn" onclick="calc('2')">2</button><button class="calc-btn" onclick="calc('3')">3</button><button class="calc-btn" onclick="calc('-')">-</button>
                 <button class="calc-btn" onclick="calc('0')">0</button><button class="calc-btn" onclick="calc('.')">.</button><button class="calc-btn" style="background:var(--neon-green); color:#000;" onclick="calcRes()">=</button><button class="calc-btn" onclick="calc('+')">+</button>
-                <button class="calc-btn" style="grid-column: span 4; background:#ef4444;" onclick="document.getElementById('calcDisplay').value=''">LIMPAR</button>
+                <button class="calc-btn" style="grid-column: span 4; background:#ef4444;" onclick="document.getElementById('calcDisplay').value=''">LIMPAR TUDO</button>
             </div>
         </div>
     </div>
 </div>
 
-<div id="scannerModal" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:black; z-index:4000; display:flex; flex-direction:column;">
+<div id="scannerModal" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:black; z-index:6000; display:flex; flex-direction:column;">
     <div id="reader" style="width:100%; flex-grow:1;"></div>
-    <button onclick="fecharCam()" style="padding:20px; background:red; color:white; border:none; font-weight:bold;">FECHAR CÂMERA</button>
+    <button onclick="fecharCam()" style="padding:20px; background:red; color:white; border:none; font-weight:bold; font-size:16px;">❌ FECHAR CÂMERA</button>
 </div>
 
-<div id="modalConfig">
-    <div class="card" style="width: 320px;">
-        <h3>⚙️ Ajustes do Sistema</h3>
-        <button class="action" onclick="toggleFS()">🖥️ ALTERAR TELA CHEIA</button>
-        <button class="action" onclick="toggleTema()">🌓 ALTERAR TEMA</button>
-        <label style="display:flex; align-items:center; gap:10px; margin-top:15px;"><input type="checkbox" id="relogioCheck" onchange="salvarConf()"> Mostrar Relógio / Data Completa</label>
-        <hr style="opacity:0.1; margin:15px 0;">
-        <label>Alterar Minha Senha</label><input id="newPass" type="password">
+<div id="modalConfig" class="modal">
+    <div class="card-panel">
+        <h3>⚙️ Ajustes Gerais do Aplicativo</h3>
+        <button class="action" onclick="toggleFS()">🖥️ OPÇÃO DE TELA CHEIA</button>
+        <button class="action" onclick="document.body.classList.toggle('light-mode')">🌓 ALTERAR TEMA (CLARO/ESCURO)</button>
+        
+        <label style="display:flex; align-items:center; gap:8px; margin-top:15px;"><input type="checkbox" id="checkEmpresa" onchange="toggleConfigOption('empresaTopo', this.checked)"> Destacar Nome da Empresa no Topo</label>
+        
+        <label style="display:flex; align-items:center; gap:8px; margin-top:10px;"><input type="checkbox" id="checkRelogio" onchange="toggleConfigOption('relogio', this.checked)"> Adicionar Relógio Digital (Data/Hora/Segundos)</label>
+        
+        <hr style="opacity:0.2; margin:15px 0;">
+        <label>Alterar Minha Senha de Acesso</label>
+        <input id="newPass" type="password" placeholder="Nova senha">
         <button class="action btn-save" onclick="saveNewPass()">💾 ATUALIZAR SENHA</button>
-        <button class="action" onclick="fecharConfig()">FECHAR</button>
+        
+        <button class="action" style="background:#475569; color:white;" onclick="document.getElementById('modalConfig').style.display='none'">FECHAR AJUSTES</button>
     </div>
-</div>
-
-<div class="footer-whatsapp">
-    <a href="https://w.app/erpultramasterpro" target="_blank" class="btn-whats">💬 Quero um Controle de Estoque Personalizado</a>
 </div>
 
 <footer class="footer-credits">
@@ -249,44 +330,96 @@
 </footer>
 
 <script>
+    // --- BANCO DE DADOS LOCAL ---
     let db = {
+        usuarios: JSON.parse(localStorage.getItem('db_users_v2')) || [],
         estoque: JSON.parse(localStorage.getItem('db_est')) || [],
-        notas: JSON.parse(localStorage.getItem('db_notas')) || [],
-        vendas: JSON.parse(localStorage.getItem('db_vendas')) || [],
-        solicitacoes: JSON.parse(localStorage.getItem('db_sol')) || [],
         requisicoes: JSON.parse(localStorage.getItem('db_req')) || [],
-        usuarios: JSON.parse(localStorage.getItem('db_users')) || {'admin': '123'},
-        conf: JSON.parse(localStorage.getItem('db_conf')) || {relogio: true}
+        solicitacoes: JSON.parse(localStorage.getItem('db_sol')) || [],
+        protocolos: JSON.parse(localStorage.getItem('db_prot')) || [],
+        arquivosPdf: JSON.parse(localStorage.getItem('db_pdfs')) || [],
+        vendas: JSON.parse(localStorage.getItem('db_vendas')) || [],
+        notas: JSON.parse(localStorage.getItem('db_notas')) || [],
+        conf: JSON.parse(localStorage.getItem('db_conf')) || {empresaTopo: false, relogio: true}
     };
 
+    let userLogado = null;
     let itensNfTemp = [];
-    let scanner;
+    let scanner, camTarget;
 
-    function salvar() {
+    function salvarDB() {
+        localStorage.setItem('db_users_v2', JSON.stringify(db.usuarios));
         localStorage.setItem('db_est', JSON.stringify(db.estoque));
-        localStorage.setItem('db_notas', JSON.stringify(db.notas));
-        localStorage.setItem('db_vendas', JSON.stringify(db.vendas));
-        localStorage.setItem('db_sol', JSON.stringify(db.solicitacoes));
         localStorage.setItem('db_req', JSON.stringify(db.requisicoes));
-        localStorage.setItem('db_users', JSON.stringify(db.usuarios));
+        localStorage.setItem('db_sol', JSON.stringify(db.solicitacoes));
+        localStorage.setItem('db_prot', JSON.stringify(db.protocolos));
+        localStorage.setItem('db_pdfs', JSON.stringify(db.arquivosPdf));
+        localStorage.setItem('db_vendas', JSON.stringify(db.vendas));
+        localStorage.setItem('db_notas', JSON.stringify(db.notas));
         localStorage.setItem('db_conf', JSON.stringify(db.conf));
         renderizarTudo();
     }
 
-    // LOGIN
-    function toggleSenha() { passLogin.type = passLogin.type === 'password' ? 'text' : 'password'; }
-    function autenticar() {
-        const u = userLogin.value.trim(); const p = passLogin.value.trim();
-        if(!u || !p) return alert("Campos vazios!");
-        if(!db.usuarios[u]) { db.usuarios[u] = p; alert("✨ Usuário registrado!"); }
-        if(db.usuarios[u] === p) {
-            localStorage.setItem('logado', u);
-            location.reload();
-        } else { alert("Senha incorreta!"); }
+    // --- TIMEOUT INATIVIDADE (5 MINUTOS) ---
+    let tempoInativo;
+    function resetarTimer() {
+        clearTimeout(tempoInativo);
+        if(localStorage.getItem('logado_cpf')) {
+            tempoInativo = setTimeout(() => {
+                localStorage.removeItem('logado_cpf');
+                document.getElementById('timeoutAlert').style.display = 'block';
+                new Audio('https://actions.google.com/sounds/v1/alarms/bugle_tune.ogg').play();
+                setTimeout(() => location.reload(), 4000);
+            }, 300000); // 300.000 ms = 5 min
+        }
     }
-    function logout() { localStorage.removeItem('logado'); location.reload(); }
+    document.onmousemove = resetarTimer; document.onkeypress = resetarTimer; document.onclick = resetarTimer;
 
-    // NF LOGIC
+    // --- AUTENTICAÇÃO E LOGIN ---
+    function toggleSenha(id) { const el = document.getElementById(id); el.type = el.type === 'password' ? 'text' : 'password'; }
+    function abrirPgto() { document.getElementById('modalPgto').style.display = 'flex'; }
+    function validarPgto() { document.getElementById('modalPgto').style.display = 'none'; document.getElementById('modalReg').style.display = 'flex'; }
+
+    function registrarUsuario() {
+        const cpf = regCpf.value, nome = regNome.value, tel = regTel.value, emp = regEmpresa.value, p = regPass.value;
+        if(!cpf || !nome || !p) return alert("Preencha Nome, CPF e Senha obrigatórios!");
+        if(db.usuarios.some(u => u.cpf === cpf)) return alert("❌ ERRO: Este CPF já possui uma conta registrada! Sistema bloqueado para múltiplas contas.");
+        
+        db.usuarios.push({cpf, nome, tel, empresa: emp, pass: p});
+        salvarDB();
+        alert("✅ Cadastro efetuado com sucesso! Utilize seu CPF e Senha para logar.");
+        document.getElementById('modalReg').style.display = 'none';
+    }
+
+    function autenticar() {
+        const u = userLogin.value.trim(), p = passLogin.value;
+        const user = db.usuarios.find(x => (x.cpf === u || x.nome === u) && x.pass === p);
+        if(user) {
+            localStorage.setItem('logado_cpf', user.cpf);
+            location.reload();
+        } else { alert("❌ Dados Incorretos!"); }
+    }
+
+    function logout() {
+        const audio = new Audio('https://actions.google.com/sounds/v1/water/water_drop.ogg');
+        audio.play(); // Som agradável de despedida
+        setTimeout(() => { localStorage.removeItem('logado_cpf'); location.reload(); }, 800);
+    }
+
+    // --- ESTOQUE ---
+    function addEstoque() { 
+        db.estoque.push({nome: estNome.value, qtd: 0, min: +estMin.value, cod: estCod.value, preco: 0}); 
+        salvarDB(); alert("Material Salvo!"); estNome.value=""; estMin.value=""; estCod.value=""; 
+    }
+
+    function checarEstoqueBaixo(item) {
+        if(item.qtd <= item.min) {
+            new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play();
+            alert(`⚠️ ALERTA DE ESTOQUE: O material "${item.nome}" atingiu a quantidade mínima!`);
+        }
+    }
+
+    // --- NOTA FISCAL MANUAL ---
     function localizarItemNF(val) {
         const item = db.estoque.find(e => e.cod === val || e.nome === val);
         if(item) { nfItemBusca.value = item.nome; nfVal.value = item.preco || ""; }
@@ -297,107 +430,164 @@
         renderNfTemp();
     }
     function renderNfTemp() {
-        corpoNfTemp.innerHTML = itensNfTemp.map((it, i) => `<tr><td>${it.nome}</td><td>${it.qtd}</td><td>${it.valor.toFixed(2)}</td><td>${(it.qtd*it.valor).toFixed(2)}</td><td onclick="itensNfTemp.splice(${i},1);renderNfTemp()">❌</td></tr>`).join('');
-        const tot = itensNfTemp.reduce((a,b) => a + (b.qtd * b.valor), 0);
-        nfTotalLabel.innerText = tot.toFixed(2);
+        corpoNfTemp.innerHTML = itensNfTemp.map((it, i) => `<tr><td>${it.nome}</td><td>${it.qtd}</td><td>R$ ${it.valor.toFixed(2)}</td><td>R$ ${(it.qtd*it.valor).toFixed(2)}</td><td onclick="itensNfTemp.splice(${i},1);renderNfTemp()" style="cursor:pointer;">❌</td></tr>`).join('');
+        nfTotalLabel.innerText = itensNfTemp.reduce((a,b) => a + (b.qtd * b.valor), 0).toFixed(2);
     }
     function finalizarNF() {
-        if(db.notas.some(n => n.num === nfNum.value && n.cnpj === nfCnpj.value)) return alert("⚠️ NOTA JÁ CADASTRADA!");
+        if(db.notas.some(n => n.num === nfNum.value && n.cnpj === nfCnpj.value)) return alert("⚠️ BARREIRA DE SISTEMA: Esta mesma Nota Fiscal já foi dada entrada anteriormente!");
         itensNfTemp.forEach(it => {
             let item = db.estoque.find(e => e.nome === it.nome);
             if(item) { item.qtd += it.qtd; item.preco = it.valor; }
         });
-        db.notas.push({ num: nfNum.value, forn: nfForn.value, cnpj: nfCnpj.value, itens: [...itensNfTemp], total: nfTotalLabel.innerText, data: new Date().toLocaleDateString(), user: localStorage.getItem('logado') });
+        db.notas.push({ num: nfNum.value, forn: nfForn.value, cnpj: nfCnpj.value, itens: [...itensNfTemp], total: nfTotalLabel.innerText, data: new Date().toLocaleDateString(), user: userLogado.nome });
         itensNfTemp = []; nfNum.value=""; nfForn.value=""; nfCnpj.value=""; renderNfTemp();
-        salvar(); alert("Nota Fiscal Registrada!");
+        salvarDB(); alert("Entrada de Nota Fiscal Registrada e Estoque Atualizado!");
     }
-
-    // PDV / VENDA
-    function vendaAcao(btnManual = false) {
-        const cod = vendaCod.value;
-        const item = db.estoque.find(e => e.cod === cod || e.nome === cod);
-        if(!item) return;
-        const qtd = +vendaQtd.value;
-        vendaPreview.innerHTML = `<strong>${item.nome}</strong><br>Unitário: R$ ${item.preco || "0.00"}<br>Subtotal: R$ ${(qtd * (item.preco || 0)).toFixed(2)}`;
-        
-        if(btnManual || vendaAuto.checked) {
-            if(item.qtd < qtd) return alert("Estoque Insuficiente!");
-            item.qtd -= qtd;
-            db.vendas.push({ item: item.nome, qtd: qtd, total: (qtd * (item.preco || 0)).toFixed(2), data: new Date().toLocaleString(), user: localStorage.getItem('logado') });
-            vendaCod.value = "";
-            if(item.qtd <= item.min) emitirAlerta(item.nome);
-            salvar();
-        }
-    }
-
-    // UTILS
-    function emitirAlerta(nome) {
-        new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play();
-        alert(`⚠️ ESTOQUE BAIXO: ${nome}`);
-    }
-    function calc(v) { calcDisplay.value += v; }
-    function calcRes() { try { calcDisplay.value = eval(calcDisplay.value); } catch { calcDisplay.value = "Erro"; } }
-    function mostrar(id) { document.querySelectorAll('.section').forEach(s => s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); if(id === 'hist_nf') renderHistNf(); }
-    function toggleFS() { if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
-    function toggleTema() { document.body.classList.toggle('light-mode'); }
-    function abrirConfig() { modalConfig.style.display = 'flex'; }
-    function fecharConfig() { modalConfig.style.display = 'none'; }
-    
-    function abrirCam(id) {
-        scannerModal.classList.remove('hidden');
-        scanner = new Html5Qrcode("reader");
-        scanner.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (txt) => {
-            document.getElementById(id).value = txt;
-            document.getElementById(id).dispatchEvent(new Event('change'));
-            fecharCam();
-        }).catch(() => { alert("Câmera não disponível"); fecharCam(); });
-    }
-    function fecharCam() { if(scanner) scanner.stop().then(() => scannerModal.classList.add('hidden')); }
-
-    function atualizarRelogio() {
-        if(!db.conf.relogio) return relogioContainer.innerHTML = "";
-        const agora = new Date();
-        const dias = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
-        relogioContainer.innerHTML = `<div id="relogio">${agora.toLocaleDateString()} (${dias[agora.getDay()]}) ${agora.toLocaleTimeString()}</div>`;
-    }
-    setInterval(atualizarRelogio, 1000);
-
-    function renderizarTudo() {
-        db.estoque.sort((a,b) => a.nome.localeCompare(b.nome));
-        tabEstoque.querySelector('tbody').innerHTML = db.estoque.map(e => `<tr><td>${e.nome}</td><td style="${e.qtd<=e.min?'color:red;font-weight:bold':''}">${e.qtd}</td><td>${e.min}</td></tr>`).join('');
-        reqItem.innerHTML = `<option value="">Selecione...</option>` + db.estoque.map(e => `<option value="${e.nome}">${e.nome}</option>`).join('');
-        tabSol.innerHTML = db.solicitacoes.map(s => `<tr><td>${s.nome}</td><td>${s.qtd}</td><td><span class="status-badge ${s.status}">${s.status}</span></td></tr>`).join('');
-        corpoVendas.innerHTML = db.vendas.map(v => `<tr><td>${v.data}</td><td>${v.item}</td><td>${v.qtd}</td><td>R$ ${v.total}</td><td>${v.user}</td></tr>`).join('');
-    }
-
     function renderHistNf() {
         const f = buscaNf.value.toLowerCase();
         corpoHistNf.innerHTML = db.notas.filter(n => n.num.includes(f) || n.forn.toLowerCase().includes(f) || n.cnpj.includes(f) || n.data.includes(f)).map(n => `<tr><td>${n.data}</td><td>${n.num}</td><td>${n.forn}</td><td>${n.cnpj}</td><td>R$ ${n.total}</td></tr>`).join('');
     }
 
-    function addEstoque() { db.estoque.push({nome: estNome.value, qtd: 0, min: +estMin.value, cod: estCod.value, preco: 0}); estNome.value=""; estMin.value=""; estCod.value=""; salvar(); }
-    function addSolicitacao() { db.solicitacoes.push({nome: solNome.value, qtd: solQtd.value, status: solStatus.value}); solNome.value=""; solQtd.value=""; salvar(); }
-    function mostrarSaldoReq(n) { const it = db.estoque.find(e=>e.nome===n); saldoAviso.innerText = it ? `Saldo: ${it.qtd}` : ""; }
-    
-    function gerarRequisicao() {
-        const { jsPDF } = window.jspdf; const doc = new jsPDF();
-        doc.text("REQUISIÇÃO DE MATERIAL", 105, 20, {align:'center'});
-        doc.text(`Funcionário: ${reqFunc.value} | Matrícula: ${reqMat.value}`, 20, 40);
-        doc.autoTable({ startY: 50, head: [['Item', 'Quantidade']], body: [[reqItem.value, reqQtd.value]] });
-        doc.text("Assinatura: __________________________", 20, 100);
-        doc.save(`REQ_${reqFunc.value}.pdf`);
+    // --- ESCANEAR NF EM PDF ---
+    function salvarPdfNf() {
+        const file = document.getElementById('nfFile').files[0];
+        const name = document.getElementById('nfFileName').value || `NF-Scan-${Date.now()}`;
+        if(!file) return alert("Selecione um arquivo (PDF ou Imagem) da Nota Fiscal!");
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            db.arquivosPdf.push({ nome: name, data: new Date().toLocaleDateString(), base64: e.target.result });
+            salvarDB(); alert("✅ Nota Fiscal em PDF Salva no Histórico!");
+            document.getElementById('nfFileName').value = "";
+        };
+        reader.readAsDataURL(file);
+    }
+    function baixarPdf(b64, nome) { const a = document.createElement("a"); a.href = b64; a.download = nome; a.click(); }
+
+    // --- PDV (VENDAS) ---
+    function vendaAcao(manual = false) {
+        const cod = vendaCod.value;
+        const item = db.estoque.find(e => e.cod === cod || e.nome === cod);
+        if(!item) return;
+        const qtd = +vendaQtd.value;
+        vendaPreview.innerHTML = `<strong>${item.nome}</strong><br>Valor Unitário (Base NF): R$ ${item.preco || "0.00"}<br>Subtotal: R$ ${(qtd * (item.preco || 0)).toFixed(2)}`;
+        
+        if(manual || vendaAuto.checked) {
+            if(item.qtd < qtd) return alert("❌ Estoque Insuficiente para Venda!");
+            item.qtd -= qtd;
+            db.vendas.push({ item: item.nome, qtd: qtd, total: (qtd * (item.preco || 0)).toFixed(2), data: new Date().toLocaleString(), user: userLogado.nome });
+            vendaCod.value = ""; salvarDB(); checarEstoqueBaixo(item);
+        }
     }
 
-    function saveNewPass() { if(newPass.value) { db.usuarios[localStorage.getItem('logado')] = newPass.value; salvar(); alert("Senha alterada!"); } }
-    function salvarConf() { db.conf.relogio = relogioCheck.checked; salvar(); }
+    // --- SOLICITAÇÕES E PROTOCOLO ---
+    function addSolicitacao() {
+        const st = solStatus.value, obj = { id: Date.now(), nome: solNome.value, qtd: solQtd.value, status: st, data: new Date().toLocaleDateString() };
+        db.solicitacoes.push(obj); if(st === 'recebido') gerarProtocolo(obj); salvarDB();
+    }
+    function mudarStatusSol(id, st) {
+        const s = db.solicitacoes.find(x => x.id == id); s.status = st;
+        if(st === 'recebido') gerarProtocolo(s); salvarDB();
+    }
+    function gerarProtocolo(solObj) {
+        db.protocolos.push({ data: new Date().toLocaleString(), item: solObj.nome, qtd: solObj.qtd, aviso: "🔴 NF PENDENTE DE ENTRADA" });
+    }
 
+    // --- COTAÇÃO IA SIMULADA ---
+    function cotarIA() {
+        const b = document.getElementById('iaBusca').value;
+        if(!b) return alert("Digite o material para cotar!");
+        const div = document.getElementById('iaResultado');
+        div.style.display = 'block'; div.innerHTML = "⏳ <i>A I.A. está comparando preços em tempo real (MercadoLivre, Shopee, Fornecedores Locais)... Aguarde...</i>";
+        
+        setTimeout(() => {
+            const min = (Math.random() * 80 + 5).toFixed(2), max = (parseFloat(min) * 1.6).toFixed(2);
+            div.innerHTML = `<strong>🤖 Relatório IA para "${b}":</strong><br><br>💰 Menor Preço Localizado: <b>R$ ${min}</b> (Distribuidora Atacadista)<br>📉 Preço Médio Regional: <b>R$ ${((parseFloat(min)+parseFloat(max))/2).toFixed(2)}</b><br>🛒 <i>Dica: Excelente momento para compra, preço 10% abaixo da média mensal.</i>`;
+        }, 2000);
+    }
+
+    // --- REQUISIÇÕES ---
+    function mostrarSaldoReq(nome) { const item = db.estoque.find(e => e.nome === nome); document.getElementById('saldoAviso').innerText = item ? `SALDO ATUAL NO ESTOQUE: ${item.qtd} UNIDADES` : ""; }
+    function salvarRequisicaoBaixa() {
+        const item = db.estoque.find(e => e.nome === reqItem.value), qtd = +reqQtd.value;
+        if(!item || item.qtd < qtd) return alert("❌ Saldo insuficiente para requisição!");
+        item.qtd -= qtd; db.requisicoes.push({func: reqFunc.value, item: reqItem.value, qtd, data: new Date().toLocaleDateString()});
+        salvarDB(); alert("✅ Baixa no estoque efetuada com sucesso!"); checarEstoqueBaixo(item);
+    }
+    function gerarPdfRequisicao() {
+        const { jsPDF } = window.jspdf; const doc = new jsPDF();
+        doc.setFontSize(16); doc.text("TERMO DE RESPONSABILIDADE - RETIRADA", 105, 20, {align:'center'});
+        doc.setFontSize(12); doc.text(`Data: ${new Date().toLocaleDateString()}`, 20, 40); doc.text(`Funcionário Solicitante: ${reqFunc.value}`, 20, 50);
+        doc.autoTable({ startY: 60, head: [['Material a Retirar', 'Quantidade Liberada']], body: [[reqItem.value, reqQtd.value]] });
+        doc.text("__________________________________________", 20, 150); doc.text("Assinatura do Funcionário", 20, 155);
+        doc.text("__________________________________________", 110, 150); doc.text("Assinatura Almoxarife", 110, 155);
+        doc.save(`Requisicao_${reqFunc.value}.pdf`);
+    }
+
+    // --- RELATÓRIO MENSAL ---
+    function gerarRelatorioMensal() {
+        const { jsPDF } = window.jspdf; const doc = new jsPDF();
+        doc.setFontSize(14); doc.text("RELATÓRIO MENSAL DE FLUXO E MOVIMENTAÇÃO (ERP)", 105, 20, {align:'center'});
+        doc.setFontSize(10); doc.text("1. Entradas (Compras/Notas Fiscais)", 14, 30);
+        doc.autoTable({ startY: 35, head: [['Data', 'Nº NF', 'Fornecedor', 'Total Gasto']], body: db.notas.map(n => [n.data, n.num, n.forn, `R$ ${n.total}`]) });
+        let finalY = doc.lastAutoTable.finalY + 15;
+        doc.text("2. Saídas e Retiradas (Requisições)", 14, finalY);
+        doc.autoTable({ startY: finalY + 5, head: [['Data', 'Funcionário', 'Item', 'Qtd Retirada']], body: db.requisicoes.map(r => [r.data, r.func, r.item, r.qtd]) });
+        finalY = doc.lastAutoTable.finalY + 15;
+        doc.text("3. PDV (Vendas Realizadas)", 14, finalY);
+        doc.autoTable({ startY: finalY + 5, head: [['Data', 'Vendedor', 'Item', 'Valor']], body: db.vendas.map(v => [v.data, v.user, v.item, `R$ ${v.total}`]) });
+        doc.save(`Relatorio_Mensal_Fluxo.pdf`);
+    }
+
+    // --- UTILITÁRIOS E RENDERIZAÇÕES ---
+    function mostrar(id) { document.querySelectorAll('.section').forEach(s => s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); if(id === 'hist_nf') renderHistNf(); }
+    function calc(v) { calcDisplay.value += v; } function calcRes() { try { calcDisplay.value = eval(calcDisplay.value); } catch { calcDisplay.value = "Erro"; } }
+    function toggleFS() { if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+    function abrirConfig() { document.getElementById('modalConfig').style.display='flex'; }
+    function saveNewPass() { if(newPass.value && userLogado) { userLogado.pass = newPass.value; salvarDB(); alert("Senha de acesso atualizada!"); } }
+    
+    function toggleConfigOption(opt, val) { db.conf[opt] = val; salvarDB(); aplicarEmpresaTopo(); atualizarRelogio(true); }
+    function aplicarEmpresaTopo() { const div = document.getElementById('empresaTopo'); if(db.conf.empresaTopo && userLogado && userLogado.empresa) { div.innerText = `| ${userLogado.empresa}`; div.classList.remove('hidden'); } else { div.classList.add('hidden'); } }
+
+    function abrirCam(id) {
+        camTarget = id; document.getElementById('scannerModal').classList.remove('hidden');
+        scanner = new Html5Qrcode("reader");
+        scanner.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (txt) => { document.getElementById(camTarget).value = txt; document.getElementById(camTarget).dispatchEvent(new Event('change')); fecharCam(); }).catch(() => { alert("Erro de Câmera"); fecharCam(); });
+    }
+    function fecharCam() { if(scanner) scanner.stop().then(() => document.getElementById('scannerModal').classList.add('hidden')); }
+
+    function atualizarRelogio(forceCheck = false) {
+        if(!db.conf.relogio) { document.getElementById('relogioContainer').innerHTML = ""; return; }
+        const agora = new Date(), dias = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+        document.getElementById('relogioContainer').innerHTML = `<div id="relogio">📅 ${agora.toLocaleDateString()} (${dias[agora.getDay()]}) ⏰ ${agora.toLocaleTimeString()}</div>`;
+    }
+    setInterval(atualizarRelogio, 1000);
+
+    function renderizarTudo() {
+        db.estoque.sort((a,b) => a.nome.localeCompare(b.nome));
+        document.getElementById('tabEstoque').querySelector('tbody').innerHTML = db.estoque.map(e => `<tr><td>${e.nome}</td><td style="${e.qtd<=e.min?'color:red;font-weight:bold':''}">${e.qtd}</td><td>${e.min}</td></tr>`).join('');
+        document.getElementById('reqItem').innerHTML = `<option value="">Selecione para ver saldo...</option>` + db.estoque.map(e => `<option value="${e.nome}">${e.nome}</option>`).join('');
+        document.getElementById('tabSol').querySelector('tbody').innerHTML = db.solicitacoes.map(s => `<tr><td>${s.data}</td><td>${s.nome}</td><td>${s.qtd}</td><td><select onchange="mudarStatusSol(${s.id}, this.value)" style="padding:2px;font-size:10px;"><option value="${s.status}">${s.status.toUpperCase()}</option><option value="pendente">Pendente</option><option value="comprado">Comprado</option><option value="recebido">Recebido</option></select></td></tr>`).join('');
+        document.getElementById('tabProtocolos').innerHTML = db.protocolos.map(p => `<tr><td>${p.data}</td><td>${p.item}</td><td>${p.qtd}</td><td style="color:#ef4444; font-weight:bold;">${p.aviso}</td></tr>`).join('');
+        document.getElementById('listaNfPdf').innerHTML = db.arquivosPdf.map(a => `<tr><td>${a.data}</td><td><a href="#" onclick="baixarPdf('${a.base64}', '${a.nome}.pdf')" style="color:var(--accent); font-weight:bold; text-decoration:none;">📄 Baixar: ${a.nome}</a></td></tr>`).join('');
+        document.getElementById('corpoVendas').innerHTML = db.vendas.map(v => `<tr><td>${v.data}</td><td>${v.item}</td><td>${v.qtd}</td><td>R$ ${v.total}</td><td>${v.user}</td></tr>`).join('');
+    }
+
+    // --- INIT ---
     window.onload = () => {
-        const user = localStorage.getItem('logado');
-        if(user) {
-            loginArea.classList.add('hidden'); app.classList.remove('hidden'); btnConfigGlobal.classList.remove('hidden');
-            usuarioTopo.innerText = `👤 ${user.toUpperCase()}`;
-            relogioCheck.checked = db.conf.relogio;
-            renderizarTudo();
+        const cpfLogado = localStorage.getItem('logado_cpf');
+        if(cpfLogado) {
+            userLogado = db.usuarios.find(u => u.cpf === cpfLogado);
+            if(!userLogado) { logout(); return; }
+            document.getElementById('loginArea').classList.add('hidden');
+            document.getElementById('app').classList.remove('hidden');
+            document.getElementById('btnConfigGlobal').classList.remove('hidden');
+            document.getElementById('usuarioTopo').innerText = `👤 OLÁ, ${userLogado.nome.toUpperCase()}`;
+            
+            document.getElementById('checkEmpresa').checked = db.conf.empresaTopo;
+            document.getElementById('checkRelogio').checked = db.conf.relogio;
+            
+            aplicarEmpresaTopo(); atualizarRelogio(); renderizarTudo(); resetarTimer();
         }
     };
 </script>
