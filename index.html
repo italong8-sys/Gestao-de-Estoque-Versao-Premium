@@ -16,59 +16,60 @@
         }
         .light-mode { --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; --accent: #0284c7; }
 
-        body { margin: 0; font-family: 'Segoe UI', system-ui; background: var(--bg); color: var(--text); transition: 0.3s; overflow-x: hidden; }
+        body { margin: 0; font-family: 'Segoe UI', system-ui; background: var(--bg); color: var(--text); transition: 0.3s; overflow-x: hidden; display: flex; flex-direction: column; min-height: 100vh; }
+        
         header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #020617; border-bottom: 2px solid var(--accent); min-height: 60px; }
         
         .user-area { display: flex; align-items: center; gap: 15px; }
         .user { color: var(--neon-green); font-weight: bold; text-shadow: 0 0 5px var(--neon-green); }
-        .config-btn { cursor: pointer; font-size: 22px; transition: transform 0.4s; }
+        .config-btn { cursor: pointer; font-size: 22px; }
 
-        /* Estilo Login */
-        #loginArea { 
-            display: flex; justify-content: center; align-items: center; 
-            min-height: 80vh; padding: 20px;
-        }
-        .login-card { 
-            width: 100%; max-width: 380px; background: var(--card); 
-            padding: 30px; border-radius: 15px; border: 1px solid var(--accent);
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
-        }
+        #loginArea { display: flex; justify-content: center; align-items: center; flex-grow: 1; padding: 20px; }
+        .login-card { width: 100%; max-width: 380px; background: var(--card); padding: 30px; border-radius: 15px; border: 1px solid var(--accent); box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); }
 
-        .menu-geral { display: flex; flex-wrap: wrap; gap: 10px; padding: 10px 20px; background: rgba(0,0,0,0.3); }
-        .menu-geral button { flex: 1; min-width: 140px; padding: 12px; border: none; border-radius: 8px; background: var(--accent); color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 12px; }
+        .menu-geral { display: flex; flex-wrap: wrap; gap: 10px; padding: 10px 20px; background: rgba(0,0,0,0.3); justify-content: center; }
+        .menu-geral button { flex: 1; min-width: 130px; padding: 12px; border: none; border-radius: 8px; background: var(--accent); color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 11px; }
 
         .container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; }
         @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
 
         .card { background: var(--card); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); position: relative; }
-        h3 { margin-top: 0; color: var(--accent); border-bottom: 1px solid #1e293b; padding-bottom: 10px; font-size: 16px; }
+        h3 { margin-top: 0; color: var(--accent); border-bottom: 1px solid #1e293b; padding-bottom: 10px; font-size: 16px; display: flex; align-items: center; gap: 8px; }
 
         label { font-size: 12px; font-weight: bold; margin-top: 10px; display: block; color: var(--accent); }
-        input, select { width: 100%; padding: 12px; margin-top: 5px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
+        input, select { width: 100%; padding: 10px; margin-top: 5px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
+        .light-mode input, .light-mode select { background: #fff; color: #000; }
         
-        .action { width: 100%; padding: 14px; margin-top: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .action { width: 100%; padding: 12px; margin-top: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
         .btn-save { background: var(--neon-green); color: #020617; }
         
         table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
-        th { background: #1e293b; color: var(--accent); padding: 8px; text-align: left; }
+        th { background: #1e293b; color: var(--accent); padding: 8px; text-align: left; border-bottom: 1px solid var(--accent); }
         td { padding: 8px; border-bottom: 1px solid #1e293b; }
 
-        #relogio { font-family: monospace; font-size: 14px; color: var(--neon-green); margin-right: 20px; }
+        #relogio { font-family: 'Courier New', monospace; font-size: 14px; color: var(--neon-green); text-align: center; font-weight: bold; }
         
-        #modalConfig { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 10px; }
+        .calc-btn { padding: 15px; font-weight: bold; cursor: pointer; border-radius: 5px; border: none; background: #334155; color: white; }
+
+        #modalConfig { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 3000; }
         .hidden { display: none !important; }
-        .footer-credits { text-align: center; padding: 20px; font-size: 12px; opacity: 0.7; border-top: 1px solid #334155; margin-top: 20px; }
-        
-        /* Checkbox mostrar senha */
-        .show-pass-area { display: flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 13px; cursor: pointer; }
-        .show-pass-area input { width: auto; margin: 0; }
+
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; }
+        .pendente { background: #eab308; color: #000; }
+        .comprado { background: #3b82f6; color: #fff; }
+        .recebido { background: #22c55e; color: #fff; }
+
+        .footer-whatsapp { text-align: center; padding: 20px; }
+        .btn-whats { background: #25d366; color: white; padding: 12px 25px; border-radius: 50px; text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; }
+        .footer-credits { text-align: center; padding: 15px; font-size: 12px; opacity: 0.6; }
     </style>
 </head>
 <body>
 
 <header>
     <div>🚀 <strong>GESTÃO DE ESTOQUE VERSÃO PREMIUM</strong></div>
-    <div id="relogioContainer" class="hidden"></div>
+    <div id="relogioContainer"></div>
     <div class="user-area">
         <span id="usuarioTopo" class="user"></span>
         <span id="btnConfigGlobal" class="config-btn hidden" onclick="abrirConfig()">⚙️</span>
@@ -77,20 +78,15 @@
 
 <div id="loginArea">
     <div class="login-card">
-        <h3>🔐 Acesso ao Sistema</h3>
-        <p style="font-size: 11px; opacity: 0.6; margin-top: -10px;">Entre com seus dados ou registre-se no primeiro acesso.</p>
-        
+        <h3>🔐 Acesso Identificado</h3>
         <label>👤 Usuário</label>
-        <input id="userLogin" placeholder="Nome de usuário">
-        
+        <input id="userLogin" placeholder="Digite seu login">
         <label>🔑 Senha</label>
-        <input id="passLogin" type="password" placeholder="Sua senha">
-        
-        <label class="show-pass-area">
-            <input type="checkbox" onclick="toggleSenha()"> Revelar senha
+        <input id="passLogin" type="password" placeholder="Digite sua senha">
+        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; margin-top:10px; font-size:13px;">
+            <input type="checkbox" style="width:auto;" onclick="toggleSenha()"> Mostrar Senha
         </label>
-        
-        <button class="action btn-save" onclick="autenticar()">🔓 ENTRAR / REGISTRAR</button>
+        <button class="action btn-save" onclick="autenticar()">🔓 ENTRAR NO SISTEMA</button>
     </div>
 </div>
 
@@ -98,9 +94,10 @@
     <nav class="menu-geral">
         <button onclick="mostrar('estoque')">📦 Estoque</button>
         <button onclick="mostrar('notas')">🧾 Entrada NF</button>
-        <button onclick="mostrar('hist_notas')">📜 Hist. NF</button>
+        <button onclick="mostrar('hist_nf')">📜 Histórico NF</button>
         <button onclick="mostrar('venda')">💰 Nova Venda</button>
-        <button onclick="mostrar('vendas_hist')">📊 Controle Vendas</button>
+        <button onclick="mostrar('controle_vendas')">📊 Vendas</button>
+        <button onclick="mostrar('solicitacao')">🛍️ Solicitação</button>
         <button onclick="mostrar('requisicao')">📝 Requisição</button>
         <button onclick="mostrar('calculadora')">🧮 Calc</button>
         <button onclick="logout()" style="background:#ef4444;">🚪 Sair</button>
@@ -109,27 +106,142 @@
     <div id="estoque" class="container section">
         <div class="card">
             <h3>📦 Cadastro de Material</h3>
-            <label>🏷️ Nome</label><input id="estNome">
-            <label>⚠️ Mínimo</label><input id="estMin" type="number">
-            <label>🔖 Código (SKU)</label>
-            <div style="display:flex; gap:5px;"><input id="estCod"><button onclick="abrirCam('estCod')" style="background:var(--accent); border:none; color:white; padding:5px; border-radius:5px;">📷</button></div>
-            <button class="action btn-save" onclick="addEstoque()">SALVAR ITEM</button>
+            <label>🏷️ Nome do Produto</label><input id="estNome">
+            <label>⚠️ Alerta de Estoque Baixo (Min)</label><input id="estMin" type="number">
+            <label>🔖 Código de Barras</label>
+            <div style="display:flex; gap:5px;"><input id="estCod"><button onclick="abrirCam('estCod')" style="background:var(--accent); border:none; padding:10px; border-radius:8px;">📷</button></div>
+            <button class="action btn-save" onclick="addEstoque()">💾 SALVAR NO CADASTRO</button>
         </div>
-        <div class="card"><h3>📊 Inventário</h3><table><thead><tr><th>Produto</th><th>Saldo</th><th>Min</th></tr></thead><tbody id="tabEstoque"></tbody></table></div>
+        <div class="card">
+            <h3>📊 Inventário Geral (A-Z)</h3>
+            <table id="tabEstoque"><thead><tr><th>Material</th><th>Saldo</th><th>Min</th></tr></thead><tbody></tbody></table>
+        </div>
     </div>
-    
+
+    <div id="notas" class="container section hidden">
+        <div class="card" style="grid-column: span 2;">
+            <h3>🧾 📥 Lançar Nova Nota Fiscal</h3>
+            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
+                <div><label>🔢 Nº Nota Fiscal</label><input id="nfNum"></div>
+                <div><label>🏢 Fornecedor</label><input id="nfForn"></div>
+                <div><label>📜 CNPJ Fornecedor</label><input id="nfCnpj"></div>
+            </div>
+            <div style="margin-top:20px; padding:15px; border:1px solid #334155; border-radius:10px;">
+                <div style="display:grid; grid-template-columns: 2fr 1fr 1fr 0.5fr; gap:10px; align-items:end;">
+                    <div><label>🔍 Buscar Item (Nome ou Código)</label>
+                        <div style="display:flex; gap:5px;"><input id="nfItemBusca" onchange="localizarItemNF(this.value)"><button onclick="abrirCam('nfItemBusca')" style="background:var(--accent); border:none; padding:10px; border-radius:8px;">📷</button></div>
+                    </div>
+                    <div><label>🔢 Qtd</label><input id="nfQtd" type="number"></div>
+                    <div><label>💲 Valor Unit.</label><input id="nfVal" type="number" step="0.01"></div>
+                    <button class="btn-save" style="height:45px; border-radius:8px; border:none; cursor:pointer;" onclick="addItemListaNF()">➕</button>
+                </div>
+            </div>
+            <table style="margin-top:20px;">
+                <thead><tr><th>Item</th><th>Qtd</th><th>Unitário</th><th>Subtotal</th><th>Ação</th></tr></thead>
+                <tbody id="corpoNfTemp"></tbody>
+            </table>
+            <h4 style="text-align:right; color:var(--neon-green);">VALOR TOTAL NF: R$ <span id="nfTotalLabel">0.00</span></h4>
+            <button class="action btn-save" onclick="finalizarNF()">✅ REGISTRAR ENTRADA DE NOTA</button>
+        </div>
     </div>
+
+    <div id="hist_nf" class="container section hidden">
+        <div class="card" style="grid-column: span 2;">
+            <h3>📜 Histórico de Entrada de Notas Fiscais</h3>
+            <input id="buscaNf" placeholder="🔍 Filtrar por Data, Nº NF, Fornecedor ou CNPJ..." onkeyup="renderHistNf()" style="margin-bottom:15px;">
+            <table><thead><tr><th>Data</th><th>Nº NF</th><th>Fornecedor</th><th>CNPJ</th><th>Total</th></tr></thead><tbody id="corpoHistNf"></tbody></table>
+        </div>
+    </div>
+
+    <div id="venda" class="container section hidden">
+        <div class="card">
+            <h3>💰 Ponto de Venda (PDV)</h3>
+            <label>📷 Escanear Material</label>
+            <div style="display:flex; gap:5px;"><input id="vendaCod" placeholder="Aguardando scanner..." onchange="vendaAcao()"><button onclick="abrirCam('vendaCod')" style="background:var(--accent); border:none; padding:10px; border-radius:8px;">📷</button></div>
+            <label style="display:flex; align-items:center; gap:8px; margin-top:10px;"><input type="checkbox" id="vendaAuto" checked> Escanear automático o item e gerar venda</label>
+            <label>🔢 Quantidade</label><input id="vendaQtd" type="number" value="1">
+            <button class="action btn-save" onclick="vendaAcao(true)">🛒 PROCESSAR VENDA</button>
+        </div>
+        <div class="card">
+            <h3>🔎 Detalhes do Produto</h3>
+            <div id="vendaPreview" style="padding:15px; border:1px dashed var(--accent); min-height:100px;">Aguardando leitura...</div>
+        </div>
+    </div>
+
+    <div id="controle_vendas" class="container section hidden">
+        <div class="card" style="grid-column: span 2;">
+            <h3>📊 Controle de Vendas Realizadas</h3>
+            <table><thead><tr><th>Data/Hora</th><th>Material</th><th>Qtd</th><th>Valor Final</th><th>Usuário</th></tr></thead><tbody id="corpoVendas"></tbody></table>
+        </div>
+    </div>
+
+    <div id="solicitacao" class="container section hidden">
+        <div class="card">
+            <h3>🛍️ Solicitação de Suprimentos</h3>
+            <label>📦 Material</label><input id="solNome">
+            <label>🔢 Quantidade</label><input id="solQtd" type="number">
+            <label>🚦 Status</label>
+            <select id="solStatus">
+                <option value="pendente">Pendente</option>
+                <option value="comprado">Já Comprado (Aguardando)</option>
+                <option value="recebido">Material Recebido</option>
+            </select>
+            <button class="action btn-save" onclick="addSolicitacao()">📝 ADICIONAR À LISTA</button>
+        </div>
+        <div class="card">
+            <h3>📋 Lista de Compras</h3>
+            <table><thead><tr><th>Item</th><th>Qtd</th><th>Status</th></tr></thead><tbody id="tabSol"></tbody></table>
+        </div>
+    </div>
+
+    <div id="requisicao" class="container section hidden">
+        <div class="card">
+            <h3>📝 Requisição de Material</h3>
+            <label>👤 Funcionário</label><input id="reqFunc">
+            <label>🆔 Matrícula</label><input id="reqMat">
+            <label>📦 Selecionar Material</label>
+            <select id="reqItem" onchange="mostrarSaldoReq(this.value)"></select>
+            <div id="saldoAviso" style="font-size:11px; color:var(--accent); margin-top:5px;"></div>
+            <label>🔢 Quantidade</label><input id="reqQtd" type="number">
+            <button class="action btn-save" onclick="gerarRequisicao()">📄 IMPRIMIR REQUISIÇÃO (PDF)</button>
+        </div>
+    </div>
+
+    <div id="calculadora" class="container section hidden">
+        <div class="card" style="max-width:320px; margin:auto; grid-column: span 2;">
+            <h3>🧮 Calculadora Auxiliar</h3>
+            <input id="calcDisplay" style="text-align:right; font-size:24px; margin-bottom:10px;" readonly>
+            <div class="calc-grid">
+                <button class="calc-btn" onclick="calc('7')">7</button><button class="calc-btn" onclick="calc('8')">8</button><button class="calc-btn" onclick="calc('9')">9</button><button class="calc-btn" onclick="calc('/')">/</button>
+                <button class="calc-btn" onclick="calc('4')">4</button><button class="calc-btn" onclick="calc('5')">5</button><button class="calc-btn" onclick="calc('6')">6</button><button class="calc-btn" onclick="calc('*')">*</button>
+                <button class="calc-btn" onclick="calc('1')">1</button><button class="calc-btn" onclick="calc('2')">2</button><button class="calc-btn" onclick="calc('3')">3</button><button class="calc-btn" onclick="calc('-')">-</button>
+                <button class="calc-btn" onclick="calc('0')">0</button><button class="calc-btn" onclick="calc('.')">.</button><button class="calc-btn" style="background:var(--neon-green); color:#000;" onclick="calcRes()">=</button><button class="calc-btn" onclick="calc('+')">+</button>
+                <button class="calc-btn" style="grid-column: span 4; background:#ef4444;" onclick="document.getElementById('calcDisplay').value=''">LIMPAR</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="scannerModal" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:black; z-index:4000; display:flex; flex-direction:column;">
+    <div id="reader" style="width:100%; flex-grow:1;"></div>
+    <button onclick="fecharCam()" style="padding:20px; background:red; color:white; border:none; font-weight:bold;">FECHAR CÂMERA</button>
+</div>
 
 <div id="modalConfig">
     <div class="card" style="width: 320px;">
-        <h3>⚙️ Ajustes</h3>
-        <button class="action" onclick="toggleFullScreen()">🖥️ TELA CHEIA</button>
-        <button class="action" onclick="toggleTema()">🌓 TEMA</button>
-        <label><input type="checkbox" id="checkRelogio" onchange="toggleRelogio()"> Exibir Relógio Digital</label>
-        <label>Nova Senha</label><input id="newPass" type="password">
-        <button class="action btn-save" onclick="saveConfig()">SALVAR</button>
+        <h3>⚙️ Ajustes do Sistema</h3>
+        <button class="action" onclick="toggleFS()">🖥️ ALTERAR TELA CHEIA</button>
+        <button class="action" onclick="toggleTema()">🌓 ALTERAR TEMA</button>
+        <label style="display:flex; align-items:center; gap:10px; margin-top:15px;"><input type="checkbox" id="relogioCheck" onchange="salvarConf()"> Mostrar Relógio / Data Completa</label>
+        <hr style="opacity:0.1; margin:15px 0;">
+        <label>Alterar Minha Senha</label><input id="newPass" type="password">
+        <button class="action btn-save" onclick="saveNewPass()">💾 ATUALIZAR SENHA</button>
         <button class="action" onclick="fecharConfig()">FECHAR</button>
     </div>
+</div>
+
+<div class="footer-whatsapp">
+    <a href="https://w.app/erpultramasterpro" target="_blank" class="btn-whats">💬 Quero um Controle de Estoque Personalizado</a>
 </div>
 
 <footer class="footer-credits">
@@ -137,105 +249,155 @@
 </footer>
 
 <script>
-    // Banco de dados Local
     let db = {
         estoque: JSON.parse(localStorage.getItem('db_est')) || [],
         notas: JSON.parse(localStorage.getItem('db_notas')) || [],
         vendas: JSON.parse(localStorage.getItem('db_vendas')) || [],
+        solicitacoes: JSON.parse(localStorage.getItem('db_sol')) || [],
+        requisicoes: JSON.parse(localStorage.getItem('db_req')) || [],
         usuarios: JSON.parse(localStorage.getItem('db_users')) || {'admin': '123'},
-        conf: JSON.parse(localStorage.getItem('db_conf')) || {relogio: false}
+        conf: JSON.parse(localStorage.getItem('db_conf')) || {relogio: true}
     };
 
-    // --- LÓGICA DE LOGIN ---
-    function toggleSenha() {
-        const passInput = document.getElementById('passLogin');
-        passInput.type = passInput.type === 'password' ? 'text' : 'password';
-    }
+    let itensNfTemp = [];
+    let scanner;
 
-    function autenticar() {
-        const u = document.getElementById('userLogin').value.trim();
-        const p = document.getElementById('passLogin').value.trim();
-
-        if (!u || !p) {
-            alert("Por favor, preencha usuário e senha.");
-            return;
-        }
-
-        // Registro Automático se usuário não existir
-        if (!db.usuarios[u]) {
-            db.usuarios[u] = p;
-            localStorage.setItem('db_users', JSON.stringify(db.usuarios));
-            alert("✨ Novo usuário registrado!");
-        }
-
-        // Validação
-        if (db.usuarios[u] === p) {
-            localStorage.setItem('logado', u);
-            iniciarApp(u);
-        } else {
-            alert("❌ Senha incorreta!");
-        }
-    }
-
-    function logout() {
-        localStorage.removeItem('logado');
-        location.reload(); // Recarrega para voltar à tela de login limpa
-    }
-
-    function iniciarApp(usuario) {
-        document.getElementById('loginArea').classList.add('hidden');
-        document.getElementById('app').classList.remove('hidden');
-        document.getElementById('btnConfigGlobal').classList.remove('hidden');
-        document.getElementById('usuarioTopo').innerText = `👤 ${usuario.toUpperCase()}`;
-        
-        // Ativa relógio se configurado
-        if(db.conf.relogio) {
-            document.getElementById('relogioContainer').classList.remove('hidden');
-            document.getElementById('checkRelogio').checked = true;
-        }
-        
+    function salvar() {
+        localStorage.setItem('db_est', JSON.stringify(db.estoque));
+        localStorage.setItem('db_notas', JSON.stringify(db.notas));
+        localStorage.setItem('db_vendas', JSON.stringify(db.vendas));
+        localStorage.setItem('db_sol', JSON.stringify(db.solicitacoes));
+        localStorage.setItem('db_req', JSON.stringify(db.requisicoes));
+        localStorage.setItem('db_users', JSON.stringify(db.usuarios));
+        localStorage.setItem('db_conf', JSON.stringify(db.conf));
         renderizarTudo();
     }
 
-    // --- SISTEMA ---
-    function mostrar(id) {
-        document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
-        const el = document.getElementById(id);
-        if(el) el.classList.remove('hidden');
+    // LOGIN
+    function toggleSenha() { passLogin.type = passLogin.type === 'password' ? 'text' : 'password'; }
+    function autenticar() {
+        const u = userLogin.value.trim(); const p = passLogin.value.trim();
+        if(!u || !p) return alert("Campos vazios!");
+        if(!db.usuarios[u]) { db.usuarios[u] = p; alert("✨ Usuário registrado!"); }
+        if(db.usuarios[u] === p) {
+            localStorage.setItem('logado', u);
+            location.reload();
+        } else { alert("Senha incorreta!"); }
+    }
+    function logout() { localStorage.removeItem('logado'); location.reload(); }
+
+    // NF LOGIC
+    function localizarItemNF(val) {
+        const item = db.estoque.find(e => e.cod === val || e.nome === val);
+        if(item) { nfItemBusca.value = item.nome; nfVal.value = item.preco || ""; }
+    }
+    function addItemListaNF() {
+        if(!nfItemBusca.value || !nfQtd.value) return;
+        itensNfTemp.push({ nome: nfItemBusca.value, qtd: +nfQtd.value, valor: +nfVal.value });
+        renderNfTemp();
+    }
+    function renderNfTemp() {
+        corpoNfTemp.innerHTML = itensNfTemp.map((it, i) => `<tr><td>${it.nome}</td><td>${it.qtd}</td><td>${it.valor.toFixed(2)}</td><td>${(it.qtd*it.valor).toFixed(2)}</td><td onclick="itensNfTemp.splice(${i},1);renderNfTemp()">❌</td></tr>`).join('');
+        const tot = itensNfTemp.reduce((a,b) => a + (b.qtd * b.valor), 0);
+        nfTotalLabel.innerText = tot.toFixed(2);
+    }
+    function finalizarNF() {
+        if(db.notas.some(n => n.num === nfNum.value && n.cnpj === nfCnpj.value)) return alert("⚠️ NOTA JÁ CADASTRADA!");
+        itensNfTemp.forEach(it => {
+            let item = db.estoque.find(e => e.nome === it.nome);
+            if(item) { item.qtd += it.qtd; item.preco = it.valor; }
+        });
+        db.notas.push({ num: nfNum.value, forn: nfForn.value, cnpj: nfCnpj.value, itens: [...itensNfTemp], total: nfTotalLabel.innerText, data: new Date().toLocaleDateString(), user: localStorage.getItem('logado') });
+        itensNfTemp = []; nfNum.value=""; nfForn.value=""; nfCnpj.value=""; renderNfTemp();
+        salvar(); alert("Nota Fiscal Registrada!");
     }
 
-    function toggleRelogio() {
-        db.conf.relogio = document.getElementById('checkRelogio').checked;
-        document.getElementById('relogioContainer').classList.toggle('hidden', !db.conf.relogio);
-        localStorage.setItem('db_conf', JSON.stringify(db.conf));
+    // PDV / VENDA
+    function vendaAcao(btnManual = false) {
+        const cod = vendaCod.value;
+        const item = db.estoque.find(e => e.cod === cod || e.nome === cod);
+        if(!item) return;
+        const qtd = +vendaQtd.value;
+        vendaPreview.innerHTML = `<strong>${item.nome}</strong><br>Unitário: R$ ${item.preco || "0.00"}<br>Subtotal: R$ ${(qtd * (item.preco || 0)).toFixed(2)}`;
+        
+        if(btnManual || vendaAuto.checked) {
+            if(item.qtd < qtd) return alert("Estoque Insuficiente!");
+            item.qtd -= qtd;
+            db.vendas.push({ item: item.nome, qtd: qtd, total: (qtd * (item.preco || 0)).toFixed(2), data: new Date().toLocaleString(), user: localStorage.getItem('logado') });
+            vendaCod.value = "";
+            if(item.qtd <= item.min) emitirAlerta(item.nome);
+            salvar();
+        }
     }
+
+    // UTILS
+    function emitirAlerta(nome) {
+        new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play();
+        alert(`⚠️ ESTOQUE BAIXO: ${nome}`);
+    }
+    function calc(v) { calcDisplay.value += v; }
+    function calcRes() { try { calcDisplay.value = eval(calcDisplay.value); } catch { calcDisplay.value = "Erro"; } }
+    function mostrar(id) { document.querySelectorAll('.section').forEach(s => s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); if(id === 'hist_nf') renderHistNf(); }
+    function toggleFS() { if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+    function toggleTema() { document.body.classList.toggle('light-mode'); }
+    function abrirConfig() { modalConfig.style.display = 'flex'; }
+    function fecharConfig() { modalConfig.style.display = 'none'; }
+    
+    function abrirCam(id) {
+        scannerModal.classList.remove('hidden');
+        scanner = new Html5Qrcode("reader");
+        scanner.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (txt) => {
+            document.getElementById(id).value = txt;
+            document.getElementById(id).dispatchEvent(new Event('change'));
+            fecharCam();
+        }).catch(() => { alert("Câmera não disponível"); fecharCam(); });
+    }
+    function fecharCam() { if(scanner) scanner.stop().then(() => scannerModal.classList.add('hidden')); }
 
     function atualizarRelogio() {
-        if(!db.conf.relogio) return;
+        if(!db.conf.relogio) return relogioContainer.innerHTML = "";
         const agora = new Date();
-        const dias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-        document.getElementById('relogioContainer').innerHTML = 
-            `<div id="relogio">${agora.toLocaleDateString()} (${dias[agora.getDay()]}) - ${agora.toLocaleTimeString()}</div>`;
+        const dias = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+        relogioContainer.innerHTML = `<div id="relogio">${agora.toLocaleDateString()} (${dias[agora.getDay()]}) ${agora.toLocaleTimeString()}</div>`;
     }
     setInterval(atualizarRelogio, 1000);
 
-    // [Outras funções mantidas: addEstoque, renderizarTudo, toggleFullScreen, abrirConfig, etc.]
     function renderizarTudo() {
         db.estoque.sort((a,b) => a.nome.localeCompare(b.nome));
-        document.getElementById('tabEstoque').innerHTML = db.estoque.map(e => 
-            `<tr><td>${e.nome}</td><td style="${e.qtd <= e.min ? 'color:red;font-weight:bold' : ''}">${e.qtd}</td><td>${e.min}</td></tr>`
-        ).join('');
+        tabEstoque.querySelector('tbody').innerHTML = db.estoque.map(e => `<tr><td>${e.nome}</td><td style="${e.qtd<=e.min?'color:red;font-weight:bold':''}">${e.qtd}</td><td>${e.min}</td></tr>`).join('');
+        reqItem.innerHTML = `<option value="">Selecione...</option>` + db.estoque.map(e => `<option value="${e.nome}">${e.nome}</option>`).join('');
+        tabSol.innerHTML = db.solicitacoes.map(s => `<tr><td>${s.nome}</td><td>${s.qtd}</td><td><span class="status-badge ${s.status}">${s.status}</span></td></tr>`).join('');
+        corpoVendas.innerHTML = db.vendas.map(v => `<tr><td>${v.data}</td><td>${v.item}</td><td>${v.qtd}</td><td>R$ ${v.total}</td><td>${v.user}</td></tr>`).join('');
     }
 
-    function abrirConfig() { document.getElementById('modalConfig').style.display = 'flex'; }
-    function fecharConfig() { document.getElementById('modalConfig').style.display = 'none'; }
-    function toggleTema() { document.body.classList.toggle('light-mode'); }
+    function renderHistNf() {
+        const f = buscaNf.value.toLowerCase();
+        corpoHistNf.innerHTML = db.notas.filter(n => n.num.includes(f) || n.forn.toLowerCase().includes(f) || n.cnpj.includes(f) || n.data.includes(f)).map(n => `<tr><td>${n.data}</td><td>${n.num}</td><td>${n.forn}</td><td>${n.cnpj}</td><td>R$ ${n.total}</td></tr>`).join('');
+    }
 
-    // VERIFICAÇÃO INICIAL
+    function addEstoque() { db.estoque.push({nome: estNome.value, qtd: 0, min: +estMin.value, cod: estCod.value, preco: 0}); estNome.value=""; estMin.value=""; estCod.value=""; salvar(); }
+    function addSolicitacao() { db.solicitacoes.push({nome: solNome.value, qtd: solQtd.value, status: solStatus.value}); solNome.value=""; solQtd.value=""; salvar(); }
+    function mostrarSaldoReq(n) { const it = db.estoque.find(e=>e.nome===n); saldoAviso.innerText = it ? `Saldo: ${it.qtd}` : ""; }
+    
+    function gerarRequisicao() {
+        const { jsPDF } = window.jspdf; const doc = new jsPDF();
+        doc.text("REQUISIÇÃO DE MATERIAL", 105, 20, {align:'center'});
+        doc.text(`Funcionário: ${reqFunc.value} | Matrícula: ${reqMat.value}`, 20, 40);
+        doc.autoTable({ startY: 50, head: [['Item', 'Quantidade']], body: [[reqItem.value, reqQtd.value]] });
+        doc.text("Assinatura: __________________________", 20, 100);
+        doc.save(`REQ_${reqFunc.value}.pdf`);
+    }
+
+    function saveNewPass() { if(newPass.value) { db.usuarios[localStorage.getItem('logado')] = newPass.value; salvar(); alert("Senha alterada!"); } }
+    function salvarConf() { db.conf.relogio = relogioCheck.checked; salvar(); }
+
     window.onload = () => {
-        const usuarioLogado = localStorage.getItem('logado');
-        if (usuarioLogado) {
-            iniciarApp(usuarioLogado);
+        const user = localStorage.getItem('logado');
+        if(user) {
+            loginArea.classList.add('hidden'); app.classList.remove('hidden'); btnConfigGlobal.classList.remove('hidden');
+            usuarioTopo.innerText = `👤 ${user.toUpperCase()}`;
+            relogioCheck.checked = db.conf.relogio;
+            renderizarTudo();
         }
     };
 </script>
