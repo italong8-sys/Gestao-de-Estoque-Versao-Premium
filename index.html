@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ERP ULTRA MASTER PRO - V2026</title>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+<style>
+:root {
+    --bg: #0f172a;
+    --card: #020617;
+    --text: #e2e8f0;
+    --accent: #38bdf8;
+    --neon-pink: #ff00ff;
+    --neon-green: #39ff14;
+}
+
+.light-mode {
+    --bg: #f1f5f9;
+    --card: #ffffff;
+    --text: #1e293b;
+    --accent: #0284c7;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', system-ui;
+    background: var(--bg);
+    color: var(--text);
+    transition: 0.3s;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: #020617;
+    border-bottom: 2px solid var(--accent);
+}
+
+.user-area { display: flex; align-items: center; gap: 15px; }
+.user { color: var(--neon-green); font-weight: bold; text-shadow: 0 0 5px var(--neon-green); }
+.config-btn { cursor: pointer; font-size: 22px; transition: transform 0.4s; }
+.config-btn:hover { transform: rotate(90deg); }
+
+.apoio-container { padding: 15px; display: flex; justify-content: center; }
+.btn-mercado-pago {
+    text-decoration: none; width: 100%; max-width: 600px; padding: 14px;
+    text-align: center; border: 2px solid var(--neon-pink); color: var(--neon-pink);
+    border-radius: 12px; font-weight: 900; text-transform: uppercase;
+    box-shadow: 0 0 15px var(--neon-pink), inset 0 0 5px var(--neon-pink);
+    text-shadow: 0 0 5px var(--neon-pink);
+    transition: 0.3s; cursor: pointer;
+}
+.btn-mercado-pago:hover { background: var(--neon-pink); color: white; box-shadow: 0 0 25px var(--neon-pink); }
+
+.menu-geral {
+    display: flex; flex-wrap: wrap; gap: 10px; padding: 10px 20px;
+    background: rgba(0,0,0,0.3);
+}
+
+.menu-geral button {
+    flex: 1; min-width: 150px; padding: 12px; border: none; border-radius: 8px;
+    background: var(--accent); color: white; font-weight: bold; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+
+.container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; }
+@media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
+
+.card { background: var(--card); padding: 25px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); }
+h3 { margin-top: 0; color: var(--accent); border-bottom: 1px solid #1e293b; padding-bottom: 12px; margin-bottom: 20px; }
+
+label { font-size: 13px; font-weight: bold; margin-top: 15px; display: block; color: var(--accent); }
+input, select { 
+    width: 100%; padding: 12px; margin-top: 5px; border-radius: 8px; 
+    border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; 
+}
+
+button.action { width: 100%; padding: 14px; margin-top: 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+.btn-save { background: var(--neon-green); color: #020617; }
+
+table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
+th { background: #1e293b; color: var(--accent); padding: 10px; text-align: left; }
+td { padding: 10px; border-bottom: 1px solid #1e293b; }
+
+.status-badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
+.status-pendente { background: #facc15; color: #000; }
+.status-comprado { background: #38bdf8; color: #000; }
+.status-recebido { background: #22c55e; color: #fff; }
+
+.footer-whatsapp { padding: 40px 20px; text-align: center; }
+.btn-whats-final {
+    background: #25d366; color: white; padding: 18px 30px; border-radius: 50px;
+    text-decoration: none; font-weight: bold; font-size: 18px; display: inline-flex;
+    align-items: center; gap: 10px;
+}
+
+#modalConfig { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 1000; }
+.hidden { display: none; }
+#reader { width: 100%; max-width: 400px; margin: auto; }
+</style>
+</head>
+<body>
+
+<header>
+    <div>🚀 <strong>ERP ULTRA MASTER PRO</strong></div>
+    <div class="user-area">
+        <span id="usuarioTopo" class="user"></span>
+        <span class="config-btn" onclick="abrirConfig()">⚙️</span>
+    </div>
+</header>
+
+<div id="loginArea" style="display: flex; justify-content: center; padding: 80px 20px;">
+    <div class="card" style="width: 100%; max-width: 380px;">
+        <h3>🔐 Acesso ao Sistema</h3>
+        <label>👤 Usuário</label><input id="userLogin">
+        <label>🔑 Senha</label><input id="passLogin" type="password">
+        <button class="action btn-save" onclick="autenticar()">🔓 ACESSAR</button>
+    </div>
+</div>
+
+<div id="app" class="hidden">
+    <div class="apoio-container">
+        <a href="https://mpago.la/33gLBCv" target="_blank" class="btn-mercado-pago">⚡ Apoie o Projeto via Mercado Pago ⚡</a>
+    </div>
+
+    <nav class="menu-geral">
+        <button onclick="mostrar('estoque')">📦 Estoque Geral</button>
+        <button onclick="mostrar('notas')">🧾 Notas Fiscais</button>
+        <button onclick="mostrar('solicitacao')">🛍️ Solicitações</button>
+        <button onclick="mostrar('requisicao')">📝 Requisições</button>
+        <button onclick="mostrar('materiais')">🕒 Log Entradas</button>
+        <button onclick="logout()" style="background:#ef4444;">🚪 Sair</button>
+    </nav>
+
+    <div id="estoque" class="container section">
+        <div class="card">
+            <h3>📦 🛠️ Cadastro de Materiais</h3>
+            <label>🏷️ Nome do Produto</label><input id="estNome" placeholder="Ex: Parafuso 10mm">
+            <label>⚠️ Nível Mínimo (Alerta)</label><input id="estMin" type="number" placeholder="Ex: 10">
+            <label>🔖 Código de Barras (SKU)</label>
+            <div style="display:flex; gap:5px;">
+                <input id="estCod" placeholder="Aponte o scanner...">
+                <button onclick="mostrar('scanner')" style="width:50px; background:var(--accent); border:none; border-radius:8px; cursor:pointer;">📷</button>
+            </div>
+            <p style="font-size:11px; color:#94a3b8; margin-top:10px;">ℹ️ O saldo inicial é zero. A entrada deve ser feita via Nota Fiscal.</p>
+            <button class="action btn-save" onclick="addEstoque()">💾 CADASTRAR ITEM</button>
+        </div>
+        <div class="card">
+            <h3>📊 📋 Inventário Atual (A-Z)</h3>
+            <table>
+                <thead><tr><th>📦 Produto</th><th>🔢 Saldo</th><th>⚠️ Min</th></tr></thead>
+                <tbody id="tabEstoque"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="notas" class="container section hidden">
+        <div class="card">
+            <h3>🧾 📥 Entrada de Notas Fiscais</h3>
+            <label>🔢 Número da NF</label><input id="nfNum">
+            <label>🏢 Nome do Fornecedor</label><input id="nfForn">
+            <label>📜 CNPJ do Fornecedor</label><input id="nfCnpj" placeholder="00.000.000/0000-00">
+            <label>📦 Item do Estoque</label><select id="nfItem"></select>
+            <label>📊 Quantidade Recebida</label><input id="nfQtd" type="number">
+            <button class="action btn-save" onclick="lancarNF()">➕ FINALIZAR ENTRADA</button>
+        </div>
+        <div class="card">
+            <h3>📜 Histórico de Notas</h3>
+            <table>
+                <thead><tr><th>NF</th><th>CNPJ</th><th>Item</th><th>Qtd</th></tr></thead>
+                <tbody id="tabNotas"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="solicitacao" class="container section hidden">
+        <div class="card">
+            <h3>🛍️ 🛒 Solicitação de Compra</h3>
+            <label>📦 Material Necessário</label><input id="solNome" placeholder="O que precisa comprar?">
+            <label>🔢 Quantidade Estimada</label><input id="solQtd" type="number">
+            <label>🚦 Status Inicial</label>
+            <select id="solStatus">
+                <option value="pendente">🟡 Pendente (Aguardando Compra)</option>
+                <option value="comprado">🔵 Já Comprado (Aguardando Recebimento)</option>
+                <option value="recebido">🟢 Material Recebido</option>
+            </select>
+            <button class="action btn-save" onclick="addSolicitacao()">📝 LANÇAR SOLICITAÇÃO</button>
+        </div>
+        <div class="card">
+            <h3>📋 Lista de Suprimentos</h3>
+            <table>
+                <thead><tr><th>Material</th><th>Qtd</th><th>Status</th><th>Ação</th></tr></thead>
+                <tbody id="tabSolicitacoes"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="requisicao" class="container section hidden">
+        <div class="card">
+            <h3>📝 ✍️ Requisição de Saída</h3>
+            <label>👤 Funcionário</label><input id="reqFunc">
+            <label>🆔 Matrícula</label><input id="reqMat">
+            <label>📦 Material</label><select id="reqItem"></select>
+            <label>🔢 Quantidade</label><input id="reqQtd" type="number">
+            <button class="action btn-save" onclick="gerarRequisicao()">📄 GERAR PDF</button>
+        </div>
+        <div class="card">
+            <h3>🔍 Histórico de Retiradas</h3>
+            <input id="pesquisaFunc" placeholder="Filtrar por funcionário..." onkeyup="filtrarRetiradas()">
+            <table>
+                <thead><tr><th>Data</th><th>Func.</th><th>Item</th><th>Qtd</th></tr></thead>
+                <tbody id="tabReq"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="scanner" class="container section hidden">
+        <div class="card" style="grid-column: span 2; text-align:center;">
+            <h3>📷 Escaneando Código...</h3>
+            <div id="reader"></div>
+            <button class="action" style="background:#ef4444; color:white;" onclick="fecharScanner()">❌ CANCELAR</button>
+        </div>
+    </div>
+
+    <div id="materiais" class="container section hidden">
+        <div class="card" style="grid-column: span 2;">
+            <h3>🕒 Log de Entradas (Sincronizado)</h3>
+            <tbody id="tabEntradasLog"></tbody>
+            <table id="tabLogsFinal">
+                <thead><tr><th>Data/Hora</th><th>NF / CNPJ</th><th>Usuário</th></tr></thead>
+                <tbody id="bodyLog"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="footer-whatsapp">
+    <a href="https://w.app/erpultramasterpro" target="_blank" class="btn-whats-final">
+        💬 Quero um Controle de Estoque Personalizado
+    </a>
+</div>
+
+<div id="modalConfig">
+    <div class="card" style="width: 320px;">
+        <h3>⚙️ Ajustes</h3>
+        <button class="action" onclick="toggleTema()">🌓 ALTERAR TEMA</button>
+        <label>Nova Senha</label><input id="newPass" type="password">
+        <button class="action btn-save" onclick="saveConfig()">💾 SALVAR</button>
+        <button class="action" onclick="fecharConfig()">FECHAR</button>
+    </div>
+</div>
+
+<script>
+let db = {
+    estoque: JSON.parse(localStorage.getItem('db_est')) || [],
+    notas: JSON.parse(localStorage.getItem('db_notas')) || [],
+    requisicoes: JSON.parse(localStorage.getItem('db_req')) || [],
+    solicitacoes: JSON.parse(localStorage.getItem('db_sol')) || [],
+    usuarios: JSON.parse(localStorage.getItem('db_users')) || {'admin': '123'}
+};
+
+function salvar() {
+    localStorage.setItem('db_est', JSON.stringify(db.estoque));
+    localStorage.setItem('db_notas', JSON.stringify(db.notas));
+    localStorage.setItem('db_req', JSON.stringify(db.requisicoes));
+    localStorage.setItem('db_sol', JSON.stringify(db.solicitacoes));
+    localStorage.setItem('db_users', JSON.stringify(db.usuarios));
+    renderizarTudo();
+}
+
+// LOGIN
+function autenticar() {
+    const u = userLogin.value, p = passLogin.value;
+    if(!u || !p) return alert("Preencha os dados!");
+    if(!db.usuarios[u]) db.usuarios[u] = p;
+    if(db.usuarios[u] === p) { localStorage.setItem('logado', u); location.reload(); }
+}
+function logout() { localStorage.removeItem('logado'); location.reload(); }
+
+// NAVEGAÇÃO
+function mostrar(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+    if(id === 'scanner') iniciarScanner();
+}
+
+// ESTOQUE
+function addEstoque() {
+    if(!estNome.value) return alert("Informe o nome!");
+    db.estoque.push({nome: estNome.value, qtd: 0, min: +estMin.value, cod: estCod.value});
+    salvar();
+    estNome.value = ""; estMin.value = ""; estCod.value = "";
+    alert("✅ Item cadastrado com saldo ZERO. Dê entrada via NF.");
+}
+
+// NOTAS
+function lancarNF() {
+    const item = db.estoque.find(e => e.nome === nfItem.value);
+    if(!item) return alert("Selecione um item!");
+    item.qtd += +nfQtd.value;
+    db.notas.push({
+        num: nfNum.value, cnpj: nfCnpj.value, forn: nfForn.value, item: nfItem.value, qtd: nfQtd.value,
+        data: new Date().toLocaleDateString(), hora: new Date().toLocaleTimeString(), user: localStorage.getItem('logado')
+    });
+    salvar();
+    alert("✅ Saldo atualizado via Nota Fiscal!");
+}
+
+// SOLICITAÇÕES
+function addSolicitacao() {
+    db.solicitacoes.push({
+        id: Date.now(),
+        nome: solNome.value,
+        qtd: solQtd.value,
+        status: solStatus.value
+    });
+    salvar();
+    solNome.value = ""; solQtd.value = "";
+}
+
+function mudarStatus(id, novoStatus) {
+    const s = db.solicitacoes.find(x => x.id === id);
+    if(s) s.status = novoStatus;
+    salvar();
+}
+
+// REQUISIÇÕES
+function gerarRequisicao() {
+    const r = { funcionario: reqFunc.value, matricula: reqMat.value, item: reqItem.value, qtd: reqQtd.value, data: new Date().toLocaleDateString() };
+    const itemEst = db.estoque.find(e => e.nome === r.item);
+    if(itemEst) {
+        if(itemEst.qtd < r.qtd) return alert("Saldo insuficiente!");
+        itemEst.qtd -= +r.qtd;
+    }
+    db.requisicoes.push(r);
+    salvar();
+    imprimirPDF(r);
+}
+
+function imprimirPDF(r) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.text("COMPROVANTE DE REQUISIÇÃO", 105, 20, {align:'center'});
+    doc.text(`Func: ${r.funcionario} | Matrícula: ${r.matricula} | Data: ${r.data}`, 20, 40);
+    doc.autoTable({ startY: 50, head: [['Material', 'Qtd']], body: [[r.item, r.qtd]] });
+    doc.text("Ass: __________________", 20, 100);
+    doc.save(`REQ_${r.funcionario}.pdf`);
+}
+
+// SCANNER
+let html5QrCode;
+function iniciarScanner() {
+    html5QrCode = new Html5Qrcode("reader");
+    html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (txt) => {
+        document.getElementById('estCod').value = txt;
+        fecharScanner();
+    }).catch(() => { alert("Câmera não iniciada"); mostrar('estoque'); });
+}
+function fecharScanner() { if(html5QrCode) html5QrCode.stop().then(() => mostrar('estoque')); }
+
+// RENDERS
+function renderizarTudo() {
+    db.estoque.sort((a,b) => a.nome.localeCompare(b.nome));
+    tabEstoque.innerHTML = db.estoque.map(e => `<tr><td>${e.nome}</td><td style="${e.qtd <= e.min ? 'color:red;font-weight:bold' : ''}">${e.qtd}</td><td>${e.min}</td></tr>`).join('');
+    
+    const opts = db.estoque.map(e => `<option value="${e.nome}">${e.nome}</option>`).join('');
+    nfItem.innerHTML = opts; reqItem.innerHTML = opts;
+
+    tabNotas.innerHTML = db.notas.map(n => `<tr><td>${n.num}</td><td>${n.cnpj}</td><td>${n.item}</td><td>${n.qtd}</td></tr>`).join('');
+    
+    bodyLog.innerHTML = db.notas.map(n => `<tr><td>${n.data} ${n.hora}</td><td>NF:${n.num} | CNPJ:${n.cnpj}</td><td>${n.user}</td></tr>`).join('');
+
+    tabSolicitacoes.innerHTML = db.solicitacoes.map(s => `
+        <tr>
+            <td>${s.nome}</td><td>${s.qtd}</td>
+            <td><span class="status-badge status-${s.status}">${s.status}</span></td>
+            <td>
+                <select onchange="mudarStatus(${s.id}, this.value)" style="padding:2px; font-size:10px; width:auto;">
+                    <option value="">Mudar...</option>
+                    <option value="pendente">Pendente</option>
+                    <option value="comprado">Comprado</option>
+                    <option value="recebido">Recebido</option>
+                </select>
+            </td>
+        </tr>`).join('');
+    
+    filtrarRetiradas();
+}
+
+function filtrarRetiradas() {
+    const t = pesquisaFunc.value.toLowerCase();
+    tabReq.innerHTML = db.requisicoes.filter(r => r.funcionario.toLowerCase().includes(t)).map(r => `<tr><td>${r.data}</td><td>${r.funcionario}</td><td>${r.item}</td><td>${r.qtd}</td></tr>`).join('');
+}
+
+window.onload = () => {
+    const logado = localStorage.getItem('logado');
+    if(logado) {
+        loginArea.classList.add('hidden'); app.classList.remove('hidden');
+        usuarioTopo.innerText = `👤 ${logado.toUpperCase()}`;
+        if(localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
+        renderizarTudo();
+    }
+};
+
+function abrirConfig() { modalConfig.style.display = 'flex'; }
+function fecharConfig() { modalConfig.style.display = 'none'; }
+function toggleTema() { document.body.classList.toggle('light-mode'); localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark'); }
+function saveConfig() { if(newPass.value) { db.usuarios[localStorage.getItem('logado')] = newPass.value; salvar(); alert("Senha alterada!"); } }
+</script>
+
+</body>
+</html>
